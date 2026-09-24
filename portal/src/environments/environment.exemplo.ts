@@ -5,12 +5,12 @@ export const environment = {
   /** true = usa os emuladores locais (firebase emulators:start) quando o site roda em localhost. */
   usarEmuladores: false,
   firebase: {
-    apiKey: "AIzaSyAMfvxBPQyc2LzaHFp9x0-8K3JBKsx-8R4",
-    authDomain: "binge-buddy-ae7b1.firebaseapp.com",
-    projectId: "binge-buddy-ae7b1",
-    storageBucket: "binge-buddy-ae7b1.firebasestorage.app",
-    messagingSenderId: "1020476977461",
-    appId: "1:1020476977461:web:4c1efeb05d0de4e2905c7c",
-    measurementId: "G-FLYMMXQ0J7"
+    apiKey: "*********",
+    authDomain: "************",
+    projectId: "**********",
+    storageBucket: "************",
+    messagingSenderId: "***********",
+    appId: "************",
+    measurementId: "******"
   },
 };
