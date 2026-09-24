@@ -219,8 +219,8 @@ export function montarDocumento(corpo: Corpo, cfg: ConfigPonte): string {
 
 // ---------------------------------------------------------------------------
 // ponte.js — roda dentro do iframe ANTES do JS do conteúdo.
-// Mensagens para o portal: {cc:1, tipo:'secoes'|'abrir'|'storage'|'navegar'|'atalho-acessibilidade'}
-// Mensagens do portal:     {cc:1, tipo:'contagens'|'rolar'|'ativa'|'acessibilidade'}
+// Mensagens para o portal: {cc:1, tipo:'secoes'|'abrir'|'storage'|'navegar'|'atalho-acessibilidade'|'texto-leitura'}
+// Mensagens do portal:     {cc:1, tipo:'contagens'|'rolar'|'ativa'|'acessibilidade'|'pedir-texto'}
 // ---------------------------------------------------------------------------
 
 export const PONTE_JS = String.raw`(function(){
@@ -331,8 +331,58 @@ export const PONTE_JS = String.raw`(function(){
       secoes.forEach(function(s){ s.el.classList.toggle('cc-ativa', s.id === d.secao); });
     } else if (d.tipo === 'acessibilidade') {
       aplicarAcessibilidade(d);
+    } else if (d.tipo === 'pedir-texto') {
+      var texto = '';
+      try { texto = textoParaLer(); } catch (err) {}
+      enviar({ tipo: 'texto-leitura', id: d.id, texto: texto });
     }
   });
+
+  /* Texto para o "Ouvir página": a seleção, ou a página a partir da seção que está na tela.
+     Pula sumário, botões, marcadores de dúvida e o que está escondido (ex.: gabaritos fechados). */
+  var BLOCO = /^(P|LI|H[1-6]|DIV|SECTION|ARTICLE|HEADER|FOOTER|TR|TD|TH|SUMMARY|FIGCAPTION|BLOCKQUOTE|DT|DD|PRE|TABLE|UL|OL|LABEL)$/;
+  var PULAR = /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|IFRAME|CANVAS|BUTTON|INPUT|SELECT|TEXTAREA|NAV)$/;
+  function textoParaLer(){
+    var sel = window.getSelection ? String(window.getSelection() || '').trim() : '';
+    if (sel) return sel.replace(/\s+/g, ' ').slice(0, 20000);
+    var raiz = document.body;
+    var inicio = null;
+    if ((window.scrollY || document.documentElement.scrollTop) > 80) {
+      for (var i = 0; i < secoes.length; i++) {
+        var r = secoes[i].el.getBoundingClientRect();
+        if (r.height > 0 && r.bottom > 80) { inicio = secoes[i].el; break; }
+      }
+    }
+    var partes = [], comecou = !inicio;
+    (function andar(n){
+      if (n === inicio) comecou = true;
+      if (n.nodeType === 3) { if (comecou) partes.push(n.nodeValue); return; }
+      if (n.nodeType !== 1) return;
+      var tag = n.tagName.toUpperCase();
+      if (PULAR.test(tag)) return;
+      if (n.hasAttribute('hidden') || n.getAttribute('aria-hidden') === 'true') return;
+      if (n.classList && n.classList.contains('cc-marca')) return;
+      if (tag === 'DETAILS' && !n.open) {
+        /* gabarito fechado: lê só a pergunta do <summary>, nunca a resposta */
+        var sm = n.querySelector('summary');
+        var tx = sm ? sm.textContent.trim() : '';
+        if (comecou && tx && !/^ver respostas?$/i.test(tx)) partes.push(' ' + tx + '. ');
+        return;
+      }
+      if (n.getClientRects().length === 0) return;
+      if (tag === 'IMG') { var alt = (n.getAttribute('alt') || '').trim(); if (alt && comecou) partes.push(' Imagem: ' + alt + '. '); return; }
+      if (tag === 'SVG') { var rot = (n.getAttribute('aria-label') || '').trim(); if (rot && comecou) partes.push(' ' + rot + '. '); return; }
+      for (var c = n.firstChild; c; c = c.nextSibling) andar(c);
+      if (comecou && BLOCO.test(tag)) partes.push('. ');
+    })(raiz);
+    return partes.join(' ')
+      .replace(/\s+/g, ' ')
+      .replace(/\s+([.,;:!?])/g, '$1')
+      .replace(/([.!?:;,])(\s*\.)+/g, '$1')
+      .replace(/^[\s.]+/, '')
+      .trim()
+      .slice(0, 20000);
+  }
 
   /* Preferências do painel Allyada do portal (fonte, espaçamento, contraste, foco...) */
   var classesAlly = [];

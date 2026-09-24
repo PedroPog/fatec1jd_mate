@@ -11,9 +11,14 @@ import { Injectable, signal } from '@angular/core';
 interface AllyadaApi {
   hostContainer: unknown;
   state: { fontSizeLevel?: number } & Record<string, unknown>;
+  isSpeaking: boolean;
+  speechSynthesizer: SpeechSynthesis | null;
   init(opcoes: Record<string, unknown>): AllyadaApi;
   applyAllStateChanges(): void;
   togglePanel(): void;
+  handleSpeechClick(): void;
+  initSpeechSynthesis(): void;
+  speakText(texto: string, alvo: Element | null, inicio?: number): void;
 }
 
 declare global {
@@ -48,7 +53,19 @@ const SO_NO_PORTAL = /^ally-(contrast-(monochrome|invert)|filter-)/;
 export class AcessibilidadeService {
   readonly estado = signal<EstadoAcessibilidade | null>(null);
   readonly disponivel = signal(false);
+  /** mensagem para mostrar no topo (ex.: navegador sem vozes) */
+  readonly aviso = signal('');
   private iniciado = false;
+  /** Quando o leitor está aberto, fornece o texto do conteúdo (que está no iframe). */
+  private provedorTexto: (() => Promise<string>) | null = null;
+
+  registrarLeitor(fn: () => Promise<string>): void {
+    this.provedorTexto = fn;
+  }
+
+  removerLeitor(fn: () => Promise<string>): void {
+    if (this.provedorTexto === fn) this.provedorTexto = null;
+  }
 
   iniciar(): void {
     const ally = window.Allyada;
@@ -68,11 +85,52 @@ export class AcessibilidadeService {
         original();
         this.capturar();
       };
+      this.ajustarLeitura(ally);
       this.disponivel.set(true);
       this.capturar();
     } catch (e) {
       console.warn('[Caderno Central] Não foi possível iniciar o Allyada:', e);
     }
+  }
+
+  /**
+   * "Ouvir página" do Allyada lê o <main> do portal, mas o texto das matérias
+   * está no iframe. No leitor, o texto vem do conteúdo pela ponte.
+   */
+  private ajustarLeitura(ally: AllyadaApi): void {
+    const original = ally.handleSpeechClick.bind(ally);
+    ally.handleSpeechClick = () => {
+      this.verificarVozes();
+      const provedor = this.provedorTexto;
+      if (!provedor || ally.isSpeaking) return original();
+      provedor()
+        .then((texto) => {
+          if (!texto.trim()) return original();
+          if (!ally.speechSynthesizer) ally.initSpeechSynthesis();
+          ally.speakText(texto.trim(), null, 0);
+        })
+        .catch(() => original());
+    };
+  }
+
+  /** Sem vozes instaladas (comum no Chrome/Chromium do Linux) a leitura fica muda. */
+  private verificarVozes(): void {
+    if (!('speechSynthesis' in window)) {
+      this.aviso.set('Este navegador não tem leitura em voz alta. Tente o Chrome, o Edge ou o Firefox atualizados.');
+      return;
+    }
+    const checar = () => {
+      if (!speechSynthesis.getVoices().length) {
+        this.aviso.set(
+          'O navegador não encontrou nenhuma voz para ler o texto. No Linux, instale as vozes do sistema ' +
+            '(pacotes speech-dispatcher e espeak-ng) e reinicie o navegador, ou use o Firefox/Edge.',
+        );
+      } else if (!speechSynthesis.getVoices().some((v) => v.lang.toLowerCase().startsWith('pt'))) {
+        this.aviso.set('Nenhuma voz em português foi encontrada; a leitura vai usar a voz padrão do navegador.');
+      }
+    };
+    if (speechSynthesis.getVoices().length) checar();
+    else setTimeout(checar, 1200); // as vozes carregam de forma assíncrona
   }
 
   alternarPainel(): void {

@@ -108,7 +108,9 @@ O portal traz o painel de acessibilidade [Allyada](https://github.com/sarinha156
 - Ela é carregada no `src/index.html` com `data-auto-init="false"` e iniciada pelo `AcessibilidadeService` (`src/app/core/acessibilidade.service.ts`) com as cores do portal.
 - Dentro dos conteúdos (iframe do leitor), a ponte aplica as mesmas escolhas: tamanho do texto, espaçamento, fonte Lexend, alinhamento, contraste escuro/claro, destaque de links, foco reforçado, cursor maior e menos movimento. Tons de cinza, inversão e filtros de daltonismo já passam por cima do iframe, então não são repetidos.
 - Alt + A funciona mesmo com o foco dentro do conteúdo.
-- Ainda **não** alcançam o texto dos conteúdos: "Ouvir página" (lê só o portal), régua/máscara de leitura e teclado virtual.
+- **Ouvir página** no leitor lê o conteúdo da matéria: o texto selecionado ou, sem seleção, a partir da seção que está na tela. Pula sumário, botões e gabaritos fechados.
+- Se o navegador não tiver vozes, aparece um aviso no topo. No Linux, o Google Chrome só usa as vozes do sistema quando aberto com `--enable-speech-dispatcher`; o Firefox usa direto.
+- Ainda **não** alcançam o texto dos conteúdos: régua/máscara de leitura e teclado virtual.
 
 Para atualizar a biblioteca: troque `public/vendor/allyada/allyada.js` pela nova versão do `dist/`, teste o painel no `/forum` e num conteúdo (`/c/...`) e atualize o `VERSAO.md`.
 

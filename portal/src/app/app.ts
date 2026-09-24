@@ -40,6 +40,12 @@ import { mensagemErro } from './core/util';
         Firebase ainda não configurado. Preencha <code>src/environments/environment.ts</code> com os dados do seu projeto (veja o README).
       </p>
     }
+    @if (acessibilidade.aviso()) {
+      <p class="aviso info linha entre" style="margin:0" role="status">
+        <span>{{ acessibilidade.aviso() }}</span>
+        <button class="btn link" (click)="acessibilidade.aviso.set('')">Fechar</button>
+      </p>
+    }
     @if (erro()) {
       <p class="aviso" style="margin:0" role="alert">{{ erro() }}</p>
     }
@@ -71,9 +77,10 @@ export class App {
   protected configurado = firebaseConfigurado;
   protected erro = signal('');
 
+  protected acessibilidade = inject(AcessibilidadeService);
+
   constructor() {
-    const acessibilidade = inject(AcessibilidadeService);
-    afterNextRender(() => acessibilidade.iniciar());
+    afterNextRender(() => this.acessibilidade.iniciar());
   }
 
   async entrar() {

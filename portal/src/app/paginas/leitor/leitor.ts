@@ -132,7 +132,10 @@ export class Leitor {
 
     const ouvir = (e: MessageEvent) => this.aoReceber(e);
     window.addEventListener('message', ouvir);
+    const textoConteudo = () => this.pedirTexto();
+    this.acessibilidade.registrarLeitor(textoConteudo);
     destroy.onDestroy(() => {
+      this.acessibilidade.removerLeitor(textoConteudo);
       window.removeEventListener('message', ouvir);
       this.pararAnotacoes?.();
       this.pararRespostas?.();
@@ -178,6 +181,23 @@ export class Leitor {
     }
   }
 
+  // ---- leitura em voz alta: o texto está dentro do iframe ----
+
+  private pedidosTexto = new Map<number, (texto: string) => void>();
+  private proximoPedido = 1;
+
+  private pedirTexto(): Promise<string> {
+    if (!this.quadro()?.nativeElement.contentWindow) return Promise.resolve('');
+    const id = this.proximoPedido++;
+    return new Promise((resolver) => {
+      this.pedidosTexto.set(id, resolver);
+      this.enviar({ tipo: 'pedir-texto', id });
+      setTimeout(() => {
+        if (this.pedidosTexto.delete(id)) resolver('');
+      }, 1500);
+    });
+  }
+
   // ---- ponte com o iframe ----
 
   private enviar(msg: Record<string, unknown>) {
@@ -198,6 +218,14 @@ export class Leitor {
           if (estado) this.enviar({ tipo: 'acessibilidade', ...estado });
         }
         break;
+      case 'texto-leitura': {
+        const resolver = this.pedidosTexto.get(Number(d['id']));
+        if (resolver) {
+          this.pedidosTexto.delete(Number(d['id']));
+          resolver(String(d['texto'] ?? ''));
+        }
+        break;
+      }
       case 'atalho-acessibilidade':
         this.acessibilidade.alternarPainel();
         break;
