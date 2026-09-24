@@ -2,7 +2,7 @@ import { analisar, montarDocumento } from './documento';
 
 describe('documento', () => {
   const completo = `<!doctype html><html><head><title>Conjuntos</title>
-    <meta name="materia" content="Matemática Discreta"><meta name="tags" content="conjuntos, lógica"></head>
+    <meta name="materia" content="Matemática Discreta"><meta name="tags" content="conjuntos, lógica"><meta name="ordem" content="2"></head>
     <body><header>x</header><section id="c1"><h3><span>1.1</span>O que é</h3></section>
     <script>var a = 1;</script></body></html>`;
 
@@ -11,6 +11,7 @@ describe('documento', () => {
     expect(a.titulo).toBe('Conjuntos');
     expect(a.materia).toBe('Matemática Discreta');
     expect(a.tags).toEqual(['conjuntos', 'lógica']);
+    expect(a.ordem).toBe(2);
     expect(a.completo).toBe(true);
     expect(a.secoes).toEqual([{ id: 'c1', titulo: '1.1 O que é' }]);
   });

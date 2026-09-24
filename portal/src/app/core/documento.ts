@@ -25,6 +25,8 @@ export interface Analise {
   materia: string;
   tags: string[];
   descricao: string;
+  /** <meta name="ordem">, ou null se não houver */
+  ordem: number | null;
   completo: boolean;
   secoes: Secao[];
   bytes: number;
@@ -129,6 +131,7 @@ export function analisar(corpo: Corpo): Analise {
       .map((t) => t.trim())
       .filter(Boolean),
     descricao: meta('descricao') || meta('description'),
+    ordem: meta('ordem') && !isNaN(Number(meta('ordem'))) ? Number(meta('ordem')) : null,
     completo: /<html(\s[^>]*)?>/i.test(corpo.html) || /<head(\s[^>]*)?>/i.test(corpo.html),
     secoes,
     bytes,
@@ -294,7 +297,16 @@ export const PONTE_JS = String.raw`(function(){
     var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
     if (!a) return;
     var href = a.getAttribute('href') || '';
-    if (href.charAt(0) === '#') return;
+    if (href.charAt(0) === '#') {
+      /* O srcdoc herda o endereço do portal: sem isto, "#c3" carregaria o portal dentro do iframe. */
+      e.preventDefault();
+      var id = href.slice(1);
+      try { id = decodeURIComponent(id); } catch (err) {}
+      var alvo = id ? (document.getElementById(id) || document.getElementsByName(id)[0]) : null;
+      if (alvo) alvo.scrollIntoView();
+      else if (!id) window.scrollTo(0, 0);
+      return;
+    }
     if (/^(https?:)?\/\//i.test(href)) { a.target = '_blank'; a.rel = 'noopener'; return; }
     if (href.charAt(0) === '/') { e.preventDefault(); enviar({ tipo: 'navegar', href: href }); }
   }, true);

@@ -81,12 +81,13 @@ Qualquer HTML funciona, inclusive com CSS e JS dentro dele, como os resumos atua
   <meta name="materia"   content="Matemática Discreta">
   <meta name="tags"      content="conjuntos, lógica, resumo">
   <meta name="descricao" content="Resumo das aulas 01 e 02 com exercícios.">
+  <meta name="ordem"     content="1"> <!-- posição dentro da matéria -->
 </head>
 ```
 
 - **Seções para dúvidas**: o portal procura, nesta ordem, elementos com `data-secao` e `id`; `<section id="…">` que tenham um título dentro; `h2`/`h3` com `id`; e por fim todos os `h2`/`h3` (gerando ids como `sec-explicacao`). Cada seção ganha um marcador na margem.
 - **Mantenha os ids entre versões.** As dúvidas ficam presas ao `id` da seção.
-- **Links**: `#c3` rola dentro da página; `https://…` abre em nova aba; `/c/outro-conteudo` navega pelo portal.
+- **Links**: `#c3` rola dentro da página (índices e sumários funcionam); `https://…` abre em nova aba; `/c/outro-conteudo` navega pelo portal.
 - **Imagens**: caminhos relativos (`img/foto.png`) não carregam. Envie em *Imagens do conteúdo* no editor e use a URL gerada, ou use URLs completas.
 - **localStorage** funciona: a ponte do portal salva esses dados na conta de quem está logado (`progresso/{uid}`), ou no navegador para quem não entrou.
 - **Tamanho**: até 1 MB por conteúdo (limite de um documento do Firestore). O editor mostra a barra de uso.

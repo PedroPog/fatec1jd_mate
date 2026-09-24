@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conjuntos e Lógica: exercícios</title>
+<meta name="materia" content="Matemática Discreta">
+<meta name="tags" content="conjuntos, lógica, exercícios, kotlin">
+<meta name="descricao" content="Ligação entre conjuntos e lógica, exemplos em Kotlin e exercícios com gabarito.">
+<meta name="ordem" content="3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Kalam:wght@400;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFBFE; --grid:#E4EBF6; --card:#FFFFFF; --ink:#232834; --muted:#5A6376;
+  --pen:#1E3F9A; --red:#C3363F; --hl:#FFF0A3; --hl-ink:#232834; --line:#CAD5E7; --code:#F1F4FA;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+    --pen:#93B2FF; --red:#FF7D86; --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C; --code:#11161F;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+  --pen:#93B2FF; --red:#FF7D86; --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C; --code:#11161F;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font:17px/1.65 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+img,svg{max-width:100%}
+a{color:var(--pen)}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--pen);outline-offset:2px;border-radius:3px}
+
+.hero{max-width:1120px;margin:0 auto;padding:40px 20px 8px;display:grid;gap:12px 40px;align-items:center}
+@media (min-width:820px){.hero{grid-template-columns:1.1fr 1fr}}
+.hero h1{font-family:Kalam,"Comic Sans MS",cursive;font-weight:700;color:var(--pen);font-size:clamp(2.4rem,6vw,3.6rem);line-height:1.05;margin:0 0 12px}
+.hero p{margin:0 0 10px;max-width:46ch;color:var(--ink)}
+.hero .legend{color:var(--muted);font-size:.95rem}
+.hero figure{margin:0}
+.hero figcaption{font-family:"STIX Two Text",Cambria,serif;font-size:1.15rem;text-align:center;color:var(--ink)}
+
+.wrap{max-width:1120px;margin:0 auto;padding:16px 20px 64px;display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
+@media (min-width:1000px){.wrap{grid-template-columns:220px minmax(0,1fr);gap:40px}}
+nav.toc{font-size:.95rem}
+@media (min-width:1000px){nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto}}
+nav.toc h2{font-family:Kalam,cursive;font-size:1.3rem;margin:0 0 4px;color:var(--pen)}
+nav.toc ol{list-style:none;margin:0 0 14px;padding:0}
+nav.toc li a{display:block;padding:3px 0;color:var(--ink);text-decoration:none}
+nav.toc li a:hover{color:var(--pen);text-decoration:underline}
+nav.toc .part{font-family:Kalam,cursive;color:var(--red);font-size:1.05rem;margin-top:6px}
+
+main{border-left:2px solid var(--red);padding-left:18px;min-width:0}
+@media (min-width:700px){main{padding-left:32px}}
+main section{margin-bottom:40px}
+main p, main ul, main ol{max-width:70ch}
+.part-title{font-family:Kalam,cursive;font-weight:700;color:var(--pen);font-size:clamp(2rem,4.5vw,2.6rem);margin:8px 0 4px;line-height:1.1}
+.part-sub{color:var(--muted);margin:0 0 28px}
+h3{font-family:Kalam,cursive;font-weight:700;font-size:1.55rem;line-height:1.2;margin:0 0 8px;color:var(--ink)}
+h3 .n{color:var(--red);margin-right:8px}
+h4{font-size:1.02rem;margin:18px 0 6px}
+
+.m{font-family:"STIX Two Text","Cambria Math",Cambria,"Times New Roman",serif;font-size:1.08em;white-space:nowrap}
+.big{font-family:"STIX Two Text","Cambria Math",Cambria,serif;font-size:1.3rem;display:block;margin:4px 0}
+
+.copy{position:relative;background:var(--hl);color:var(--hl-ink);padding:22px 18px 14px;margin:16px 0;border-radius:3px 12px 4px 14px;max-width:70ch}
+.copy::before{content:"✎ copie no caderno";position:absolute;top:4px;right:12px;font-family:Kalam,cursive;font-size:.9rem;color:var(--red)}
+.copy p{margin:4px 0}
+.copy ul{margin:4px 0;padding-left:20px}
+
+.tip{border-left:4px solid var(--red);background:var(--card);padding:10px 16px;margin:16px 0;max-width:70ch}
+.tip strong.t{font-family:Kalam,cursive;color:var(--red);font-size:1.1rem;font-weight:700;display:block}
+.tip p{margin:4px 0}
+
+.ex{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:16px 0;max-width:70ch}
+.ex strong.t{font-family:Kalam,cursive;color:var(--pen);font-size:1.1rem;font-weight:700;display:block}
+.ex p{margin:4px 0}
+.ex ol, .ex ul{margin:6px 0;padding-left:22px}
+
+.scroll{overflow-x:auto;margin:14px 0;max-width:100%}
+table{border-collapse:collapse;background:var(--card)}
+th,td{border:1px solid var(--line);padding:6px 12px;text-align:center;vertical-align:top}
+th{font-family:"STIX Two Text","Cambria Math",serif;font-weight:600;font-size:1.02rem;white-space:nowrap}
+table.text td,table.text th{text-align:left}
+table.text th{font-family:inherit}
+td.v{color:var(--pen);font-weight:700}
+td.f{color:var(--red);font-weight:700}
+td.res{background:var(--hl);color:var(--hl-ink)}
+td.res.v{color:var(--pen)}
+td.res.f{color:var(--red)}
+
+.venns{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin:16px 0;max-width:760px}
+.venns figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px}
+.venns figcaption{font-size:.9rem;text-align:center;color:var(--muted)}
+.venns figcaption b{display:block;font-family:"STIX Two Text",serif;font-size:1.1rem;color:var(--ink)}
+svg .u{fill:none;stroke:var(--line);stroke-width:1.5}
+svg .sh{fill:var(--hl)}
+svg .st{fill:none;stroke:var(--pen);stroke-width:2}
+svg .lbl{fill:var(--pen);font:700 15px Kalam,cursive}
+svg .num{fill:var(--ink);font:600 13px "Atkinson Hyperlegible",sans-serif;text-anchor:middle}
+
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;font:14px/1.55 ui-monospace,"SF Mono",Menlo,Consolas,monospace;max-width:70ch}
+code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.92em}
+
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:10px 0;max-width:70ch}
+summary{cursor:pointer;font-weight:700}
+details .ans{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+details .ans p{margin:4px 0}
+.steps{counter-reset:s;list-style:none;padding-left:0}
+.steps li{counter-increment:s;position:relative;padding-left:34px;margin:8px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;border:2px solid var(--pen);color:var(--pen);font:700 13px/20px "Atkinson Hyperlegible",sans-serif;text-align:center}
+.deriv{margin:10px 0 6px;display:grid;gap:0}
+.dl{display:flex;flex-wrap:wrap;gap:2px 18px;align-items:baseline;padding:5px 0;border-bottom:1px dotted var(--line)}
+.dl .m{font-size:1.1rem;white-space:normal}
+.dl .law{color:var(--muted);font-size:.9rem}
+footer{max-width:1120px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:.9rem}
+.partes{max-width:1120px;margin:0 auto;padding:14px 20px 0;display:flex;gap:8px;flex-wrap:wrap;font-size:.92rem}
+.partes a{color:var(--pen);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 12px}
+.partes a:hover{border-color:var(--pen)}
+.partes a[aria-current="page"]{background:var(--pen);border-color:var(--pen);color:var(--card);font-weight:700}
+.partes .extra{margin-left:auto}
+.seguir{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0 0;padding-top:20px;border-top:1px dashed var(--line);max-width:70ch}
+.seguir a{font-family:Kalam,cursive;font-weight:700;font-size:1.15rem;text-decoration:none}
+.seguir a:hover{text-decoration:underline}
+.seguir .prox{margin-left:auto;text-align:right}
+.hero table{margin:0 auto}
+.hero .tv td,.hero .tv th{padding:6px 16px;font-size:1.05rem}
+</style>
+</head>
+<body>
+
+<nav class="partes" aria-label="Partes do resumo">
+  <a href="/c/teoria-dos-conjuntos">1 · Conjuntos</a>
+  <a href="/c/logica-proposicional">2 · Lógica</a>
+  <a href="/c/conjuntos-e-logica-exercicios" aria-current="page">3 · Fechamento e exercícios</a>
+  <a class="extra" href="/c/conjuntos-e-logica-inicio">Exercícios aleatórios</a>
+</nav>
+<header class="hero">
+  <div>
+    <h1>Fechamento e exercícios</h1>
+    <p>Liga as duas aulas (cada operação de conjuntos vira um conectivo), mostra como fica no código em Kotlin e traz exercícios com gabarito.</p>
+    <p class="legend">As caixas amarelas marcadas com ✎ são o essencial para passar para o caderno. O resto é explicação e exemplo.</p>
+  </div>
+  <figure>
+    <svg viewBox="0 0 320 190" role="img" aria-label="Diagrama de Venn: a interseção de A e B corresponde a p e q">
+      <defs><clipPath id="hA"><circle cx="125" cy="92" r="66"/></clipPath></defs>
+      <circle class="sh" cx="195" cy="92" r="66" clip-path="url(#hA)"/>
+      <circle class="st" cx="125" cy="92" r="66"/>
+      <circle class="st" cx="195" cy="92" r="66"/>
+      <text class="lbl" x="58" y="34" style="font-size:20px">A</text>
+      <text class="lbl" x="252" y="34" style="font-size:20px">B</text>
+      <text class="lbl" x="90" y="98">x ∈ A</text>
+      <text class="lbl" x="196" y="98">x ∈ B</text>
+      <text class="lbl" x="160" y="98" text-anchor="middle" style="font-size:18px">∧</text>
+    </svg>
+    <figcaption>A ∩ B é o “e” (∧) da lógica. As duas aulas falam da mesma ideia.</figcaption>
+  </figure>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Sumário">
+  <h2>Sumário</h2>
+  <div class="part">Fechamento</div>
+  <ol>
+    <li><a href="#p1">Conjuntos ↔ lógica</a></li>
+    <li><a href="#p2">No código (Kotlin)</a></li>
+    <li><a href="#p3">Exercícios com gabarito</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<h2 class="part-title">Fechamento</h2>
+<p class="part-sub">Ligando as duas aulas e treinando.</p>
+
+<section id="p1">
+<h3><span class="n">3.1</span>Conjuntos e lógica são a mesma coisa</h3>
+<p>Cada operação de conjuntos corresponde a um conectivo. Se você entende um lado, entende o outro.</p>
+<div class="copy">
+<div class="scroll" style="margin:6px 0"><table class="text">
+  <tr><th>Conjuntos</th><th>Lógica</th><th>Por quê</th></tr>
+  <tr><td class="m">A ∪ B</td><td class="m">p ∨ q</td><td>x ∈ A ∪ B ⇔ (x ∈ A) ∨ (x ∈ B)</td></tr>
+  <tr><td class="m">A ∩ B</td><td class="m">p ∧ q</td><td>x ∈ A ∩ B ⇔ (x ∈ A) ∧ (x ∈ B)</td></tr>
+  <tr><td class="m">Ā (complementar)</td><td class="m">¬p</td><td>x ∈ Ā ⇔ ¬(x ∈ A)</td></tr>
+  <tr><td class="m">A ⊂ B</td><td class="m">p → q</td><td>se x ∈ A, então x ∈ B</td></tr>
+  <tr><td class="m">A = B</td><td class="m">p ↔ q</td><td>x ∈ A se e somente se x ∈ B</td></tr>
+  <tr><td class="m">∅ &nbsp;/&nbsp; U</td><td class="m">F &nbsp;/&nbsp; V</td><td>nunca / sempre</td></tr>
+</table></div>
+</div>
+<p>Repare que De Morgan (<a href="/c/teoria-dos-conjuntos#c10">1.10</a> e <a href="/c/logica-proposicional#l7">2.7</a>) aparece igualzinho nos dois: <span class="m">(A ∪ B)<sup>c</sup> = A<sup>c</sup> ∩ B<sup>c</sup></span> e <span class="m">¬(p ∨ q) ≡ ¬p ∧ ¬q</span>.</p>
+</section>
+
+<section id="p2">
+<h3><span class="n">3.2</span>No código (Kotlin)</h3>
+<p>O slide usa Pascal (<code>not</code>, <code>and</code>, <code>or</code>). Em Kotlin/Java a ideia é a mesma:</p>
+<pre><code>// Lógica
+val p = true
+val q = false
+!p          // ¬p     → false
+p &amp;&amp; q      // p ∧ q  → false
+p || q      // p ∨ q  → true
+!p || q     // p → q  → false  (não há operador pronto de "se... então")
+p == q      // p ↔ q  → false
+
+// Conjuntos
+val a = setOf(0, 2, 4, 6, 8)
+val b = setOf(2, 3, 5, 7)
+a union b        // A ∪ B → [0, 2, 4, 6, 8, 3, 5, 7]
+a intersect b    // A ∩ B → [2]
+a subtract b     // A − B → [0, 4, 6, 8]
+3 in b           // 3 ∈ B → true
+b.containsAll(setOf(3, 5))   // {3, 5} ⊂ B → true</code></pre>
+<p>Curiosidade que o slide mostra em Pascal: como <code>false &lt; true</code>, a expressão <code>p &lt;= q</code> também funciona como <span class="m">p → q</span>.</p>
+</section>
+
+<section id="p3">
+<h3><span class="n">3.3</span>Exercícios com gabarito</h3>
+<p>Tente resolver antes de abrir a resposta.</p>
+
+<h4>Conjuntos</h4>
+<details><summary>1. A = {1, 2, 3} e B = {3, 4}. Calcule A ∪ B, A ∩ B, A − B e B − A.</summary>
+  <div class="ans"><p><span class="m">A ∪ B = {1, 2, 3, 4}</span>, <span class="m">A ∩ B = {3}</span>, <span class="m">A − B = {1, 2}</span>, <span class="m">B − A = {4}</span></p></div>
+</details>
+<details><summary>2. Quantos subconjuntos tem {a, b, c, d}?</summary>
+  <div class="ans"><p>São 4 elementos, então <span class="m">2⁴ = 16</span> subconjuntos.</p></div>
+</details>
+<details><summary>3. Verdadeiro ou falso: 2 ∈ {1, 2, 3}; {2} ∈ {1, 2, 3}; ∅ ⊂ {1}; {1, 2} = {2, 1, 1}.</summary>
+  <div class="ans"><p>V; F (o certo é <span class="m">{2} ⊂ {1, 2, 3}</span>); V; V.</p></div>
+</details>
+<details><summary>4. Numa turma de 40 alunos, 25 gostam de futebol, 20 de vôlei e 8 não gostam de nenhum. Quantos gostam dos dois?</summary>
+  <div class="ans"><p>Gostam de algum: 40 − 8 = 32. Pela fórmula: <span class="m">32 = 25 + 20 − x</span>, então <span class="m">x = 13</span>.</p></div>
+</details>
+
+<h4>Lógica</h4>
+<details><summary>5. Com p = V e q = F, qual o valor de p ∧ q, p ∨ q, p → q, q → p, p ↔ q e ¬p ∨ q?</summary>
+  <div class="ans"><p>F, V, F, V, F, F. (Repare que <span class="m">¬p ∨ q</span> dá o mesmo que <span class="m">p → q</span>.)</p></div>
+</details>
+<details><summary>6. Classifique (p → q) ∨ p.</summary>
+  <div class="ans"><p>Troque o condicional: <span class="m">¬p ∨ q ∨ p</span>. Como <span class="m">¬p ∨ p ≡ V</span>, sobra <span class="m">V ∨ q ≡ V</span>. É <b>tautologia</b>.</p></div>
+</details>
+<details><summary>7. Simplifique ¬(¬p ∧ q).</summary>
+  <div class="ans"><p>De Morgan: <span class="m">¬¬p ∨ ¬q</span>. Dupla negação: <span class="m">p ∨ ¬q</span>.</p></div>
+</details>
+<details><summary>8. Escreva a negação de “Se chove, então levo guarda-chuva”.</summary>
+  <div class="ans"><p>Usando <span class="m">¬(p → q) ≡ p ∧ ¬q</span>: “Chove <b>e</b> não levo guarda-chuva”.</p></div>
+</details>
+<details><summary>9. Escreva a contrapositiva de “Se estudo, então passo”.</summary>
+  <div class="ans"><p><span class="m">¬q → ¬p</span>: “Se não passei, então não estudei”.</p></div>
+</details>
+<details><summary>10. Monte a tabela de p → (p ∨ q) e diga se é tautologia.</summary>
+  <div class="ans"><p>A última coluna dá V, V, V, V (veja o exemplo em <a href="/c/logica-proposicional#l6">2.6</a>). É tautologia, por isso <span class="m">p ⇒ p ∨ q</span>.</p></div>
+</details>
+</section>
+
+<nav class="seguir" aria-label="Continuar lendo"><a href="/c/logica-proposicional">← Parte 2 · Lógica Proposicional</a><a class="prox" href="/c/conjuntos-e-logica-inicio">Treinar com exercícios aleatórios →</a></nav>
+
+</main>
+</div>
+
+<footer>Baseado nas aulas “Teoria dos Conjuntos” (Aula 01) e “Lógica Proposicional” (Prof. Drausio de Castro). Referência dos slides: DANTE, L. R. Matemática Contexto &amp; Aplicação, vol. 1, Ática, 2014.</footer>
+
+<script>
+document.querySelectorAll('table.tv td').forEach(function(td){
+  var t = td.textContent.trim();
+  if (t === 'V') td.classList.add('v');
+  else if (t === 'F') td.classList.add('f');
+});
+</script>
+</body>
+</html>

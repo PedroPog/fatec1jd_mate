@@ -194,13 +194,14 @@ export class Editor {
     if (this.previa()) this.atualizarPrevia();
   }
 
-  /** Usa <title> e as metas materia/tags/descricao do HTML para os campos vazios. */
+  /** Usa <title> e as metas materia/tags/descricao/ordem do HTML para os campos vazios. */
   private preencherDaAnalise() {
     const a = this.analise();
     if (!this.titulo().trim() && a.titulo) this.titulo.set(a.titulo);
     if (!this.materia().trim() && a.materia) this.materia.set(a.materia);
     if (!this.tags().trim() && a.tags.length) this.tags.set(a.tags.join(', '));
     if (!this.descricao().trim() && a.descricao) this.descricao.set(a.descricao);
+    if (!this.ordem() && a.ordem !== null) this.ordem.set(a.ordem);
   }
 
   protected editarSlug(v: string) {
