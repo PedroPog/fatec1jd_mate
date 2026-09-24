@@ -1,0 +1,106 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function admin() {
+      return logado() && exists(/databases/$(database)/documents/admins/$(uid()));
+    }
+    function textoOk(campo, max) {
+      return request.resource.data[campo] is string
+        && request.resource.data[campo].size() > 0
+        && request.resource.data[campo].size() <= max;
+    }
+    function autorCorreto() { return request.resource.data.autorUid == uid(); }
+    function ehAutor() { return logado() && resource.data.autorUid == uid(); }
+    // Só mexe no contador de respostas (+1 ao responder, -1 ao excluir) e na data de atividade.
+    function soContador() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['totalRespostas', 'ultimaAtividade', 'atualizadoEm'])
+        && (request.resource.data.totalRespostas == resource.data.totalRespostas + 1
+            || request.resource.data.totalRespostas == resource.data.totalRespostas - 1)
+        && request.resource.data.totalRespostas >= 0;
+    }
+    function conteudoPublicado(slug) {
+      return get(/databases/$(database)/documents/conteudos/$(slug)).data.publicado == true;
+    }
+
+    // Administradores: crie o documento admins/{seu-uid} pelo console.
+    match /admins/{id} {
+      allow read: if logado() && id == uid();
+      allow write: if false;
+    }
+
+    // Metadados dos conteúdos (lista da página inicial).
+    match /conteudos/{slug} {
+      allow read: if resource.data.publicado == true || admin();
+      allow write: if admin();
+
+      match /versoes/{versaoId} {
+        allow read, write: if admin();
+      }
+    }
+
+    // HTML, CSS e JS de cada conteúdo (separado para a lista não baixar tudo).
+    match /corpos/{slug} {
+      allow read: if admin() || conteudoPublicado(slug);
+      allow write: if admin();
+    }
+
+    // Dúvidas e anotações presas a uma seção.
+    match /anotacoes/{id} {
+      allow read: if resource.data.visibilidade == 'publica' || ehAutor() || admin();
+      allow create: if logado() && autorCorreto()
+        && textoOk('texto', 4000)
+        && request.resource.data.tipo in ['duvida', 'anotacao']
+        && request.resource.data.visibilidade in ['publica', 'privada']
+        && (request.resource.data.tipo == 'anotacao' || request.resource.data.visibilidade == 'publica')
+        && request.resource.data.totalRespostas == 0
+        && request.resource.data.resolvida == false;
+      allow update: if (ehAutor() && request.resource.data.autorUid == resource.data.autorUid
+                         && request.resource.data.totalRespostas == resource.data.totalRespostas)
+        || (admin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resolvida', 'topicoId', 'atualizadoEm']))
+        || (logado() && resource.data.visibilidade == 'publica' && soContador());
+      allow delete: if ehAutor() || admin();
+
+      match /respostas/{rid} {
+        allow read: if get(/databases/$(database)/documents/anotacoes/$(id)).data.visibilidade == 'publica' || admin();
+        allow create: if logado() && autorCorreto() && textoOk('texto', 4000);
+        allow update: if ehAutor() && request.resource.data.autorUid == resource.data.autorUid && textoOk('texto', 4000);
+        allow delete: if ehAutor() || admin();
+      }
+    }
+
+    // Fórum: qualquer um lê; escrever exige login.
+    match /topicos/{id} {
+      allow read: if true;
+      allow create: if logado() && autorCorreto()
+        && textoOk('titulo', 200) && textoOk('texto', 8000)
+        && request.resource.data.totalRespostas == 0;
+      allow update: if (ehAutor() && request.resource.data.autorUid == resource.data.autorUid
+                         && request.resource.data.totalRespostas == resource.data.totalRespostas)
+        || (logado() && soContador());
+      allow delete: if ehAutor() || admin();
+
+      match /respostas/{rid} {
+        allow read: if true;
+        allow create: if logado() && autorCorreto() && textoOk('texto', 8000);
+        allow update: if ehAutor() && request.resource.data.autorUid == resource.data.autorUid && textoOk('texto', 8000);
+        allow delete: if ehAutor() || admin();
+      }
+    }
+
+    // Material de apoio (PDFs no Storage, links e vídeos).
+    match /materiais/{id} {
+      allow read: if true;
+      allow write: if admin();
+    }
+
+    // Progresso salvo pelo JS dos conteúdos (substitui o localStorage).
+    match /progresso/{dono}/conteudos/{slug} {
+      allow read, write: if logado() && dono == uid();
+    }
+  }
+}

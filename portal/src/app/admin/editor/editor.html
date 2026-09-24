@@ -1,0 +1,190 @@
+<div class="pagina">
+  <p><a routerLink="/admin">← Admin</a></p>
+  <div class="linha entre">
+    <h1>{{ editando() ? 'Editar conteúdo' : 'Novo conteúdo' }}</h1>
+    @if (editando()) {
+      <span class="linha small">
+        @if (publicadoAtual()) { <span class="selo ok">publicado</span> } @else { <span class="selo rascunho">rascunho</span> }
+        <span class="muted">versão {{ versaoAtual() }}</span>
+        <a [routerLink]="['/c', slug()]">Abrir no portal</a>
+      </span>
+    }
+  </div>
+
+  @if (carregando()) {
+    <p class="carregando">Carregando…</p>
+  } @else {
+    <div class="grade">
+      <div class="principal">
+        <!-- arquivos -->
+        <section class="cartao pilha">
+          <h2>Arquivos</h2>
+          <p class="small muted">Envie um .html completo (como os seus resumos, com CSS e JS dentro) ou separe em até três arquivos. Dá para arrastar o arquivo para a linha.</p>
+          @for (p of partes; track p.id) {
+            @let arq = arquivos()[p.id];
+            <div class="arquivo" [class.vazio]="!arq" (dragover)="$event.preventDefault()" (drop)="soltar(p.id, $event)">
+              <span class="ext">.{{ p.id }}</span>
+              <span class="nome">
+                @if (arq) { {{ arq.nome }} } @else { {{ p.id === 'html' ? 'obrigatório' : 'opcional' }} }
+              </span>
+              @if (arq) { <span class="small muted num">{{ tamanho(arq.texto.length) }}</span> }
+              <label class="btn sec peq">
+                {{ arq ? 'Trocar' : 'Enviar' }}
+                <input type="file" [accept]="p.aceita" (change)="escolherArquivo(p.id, $event)" hidden>
+              </label>
+              <button class="btn link small" type="button" (click)="abrirColar(p.id)">{{ arq ? 'Editar texto' : 'Colar' }}</button>
+              @if (arq) { <button class="btn link small perigo" type="button" (click)="remover(p.id)">Remover</button> }
+            </div>
+            @if (colar() === p.id) {
+              <div class="pilha colar">
+                <label class="sr" for="colar-{{ p.id }}">Código {{ p.rotulo }}</label>
+                <textarea id="colar-{{ p.id }}" class="caixa mono" rows="12" spellcheck="false"
+                  [value]="textoColado()" (input)="textoColado.set($any($event.target).value)"></textarea>
+                <div class="linha">
+                  <button class="btn peq" type="button" (click)="confirmarColar()">Usar este {{ p.rotulo }}</button>
+                  <button class="btn link" type="button" (click)="colar.set(null)">Cancelar</button>
+                </div>
+              </div>
+            }
+          }
+        </section>
+
+        <!-- metadados -->
+        <section class="cartao pilha">
+          <h2>Informações</h2>
+          <div class="campos">
+            <label class="campo">Título
+              <input [value]="titulo()" (input)="titulo.set($any($event.target).value)" placeholder="lido do <title> do HTML">
+            </label>
+            <label class="campo">Endereço
+              <input [value]="slug()" (change)="editarSlug($any($event.target).value)" [readonly]="editando()">
+              <span class="small mono">/c/{{ slug() || '…' }}</span>
+            </label>
+            <label class="campo">Matéria
+              <input list="materias" [value]="materia()" (input)="materia.set($any($event.target).value)" placeholder="Ex.: Matemática Discreta">
+              <datalist id="materias">
+                @for (m of materiasExistentes(); track m) { <option [value]="m"></option> }
+              </datalist>
+            </label>
+            <label class="campo">Tags (separadas por vírgula)
+              <input [value]="tags()" (input)="tags.set($any($event.target).value)" placeholder="conjuntos, lógica, resumo">
+            </label>
+            <label class="campo">Ordem na matéria
+              <input type="number" [value]="ordem()" (input)="ordem.set(+$any($event.target).value)">
+            </label>
+          </div>
+          <label class="campo">Descrição
+            <textarea rows="2" [value]="descricao()" (input)="descricao.set($any($event.target).value)" placeholder="Uma frase que aparece no card"></textarea>
+          </label>
+        </section>
+
+        <!-- imagens -->
+        <section class="cartao pilha">
+          <h2>Imagens do conteúdo</h2>
+          <p class="small muted">Para não pesar o HTML com imagens em base64: envie aqui, copie a URL e use no <code>&lt;img src="…"&gt;</code>.</p>
+          <label class="btn sec peq" [class.desab]="!slug() || enviandoImagem()" style="justify-self:start">
+            {{ enviandoImagem() ? 'Enviando…' : 'Enviar imagens' }}
+            <input type="file" accept="image/*" multiple (change)="enviarImagens($event)" [disabled]="!slug() || enviandoImagem()" hidden>
+          </label>
+          @for (i of imagens(); track i.url) {
+            <div class="linha img-url">
+              <span class="small">{{ i.nome }}</span>
+              <code class="url">{{ i.url }}</code>
+              <button class="btn link small" type="button" (click)="copiar(i.url)">{{ copiada() === i.url ? 'Copiada' : 'Copiar URL' }}</button>
+            </div>
+          }
+        </section>
+
+        @if (previa()) {
+          <section class="cartao pilha">
+            <div class="linha entre">
+              <h2>Pré-visualização</h2>
+              <button class="btn link" type="button" (click)="atualizarPrevia()">Atualizar</button>
+            </div>
+            <iframe class="previa" title="Pré-visualização"
+              sandbox="allow-scripts allow-popups allow-forms allow-modals"
+              [srcdoc]="previa()"></iframe>
+          </section>
+        }
+
+        @if (versoes().length) {
+          <section class="cartao pilha">
+            <h2>Versões anteriores</h2>
+            <div class="tabela">
+              <table>
+                <thead><tr><th class="num">Versão</th><th>Título</th><th>Salva em</th><th>Ações</th></tr></thead>
+                <tbody>
+                  @for (v of versoes(); track v.id) {
+                    <tr>
+                      <td class="num">{{ v.versao }}</td>
+                      <td>{{ v.titulo }}</td>
+                      <td class="small">{{ v.salvoEm?.toDate() | date: 'dd/MM/yy HH:mm' }}</td>
+                      <td class="linha">
+                        <button class="btn link" type="button" (click)="restaurar(v)">Carregar no editor</button>
+                        <button class="btn link perigo" type="button" (click)="excluirVersao(v)">Excluir</button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+        }
+      </div>
+
+      <!-- verificação e ações -->
+      <aside class="lateral">
+        <div class="cartao pilha">
+          <h2>Verificação</h2>
+          @if (!corpo().html) {
+            <p class="vazio small">Envie o HTML para ver a análise.</p>
+          } @else {
+            <ul class="check">
+              <li><span class="okc">✓</span> {{ analise().completo ? 'HTML completo' : 'Trecho de HTML (o portal põe o esqueleto em volta)' }}</li>
+              <li>
+                <span [class.okc]="analise().secoes.length">{{ analise().secoes.length ? '✓' : '·' }}</span>
+                {{ analise().secoes.length }} seções para dúvidas
+                @if (analise().secoes.length) {
+                  <button class="btn link small" type="button" (click)="verSecoes.set(!verSecoes())">{{ verSecoes() ? 'ocultar' : 'ver' }}</button>
+                }
+              </li>
+            </ul>
+            @if (verSecoes()) {
+              <ol class="secoes small">
+                @for (s of analise().secoes; track s.id) { <li><code>#{{ s.id }}</code> {{ s.titulo }}</li> }
+              </ol>
+            }
+            @for (a of analise().avisos; track a) { <p class="aviso small">{{ a }}</p> }
+            @for (i of analise().infos; track i) { <p class="aviso info small">{{ i }}</p> }
+          }
+          <div class="small muted num">{{ tamanho(analise().bytes) }} de 1 MB</div>
+          <div class="barra" [class.cheia]="pct() >= 100" aria-hidden="true"><span [style.width.%]="pct()"></span></div>
+          <button class="btn sec" type="button" (click)="alternarPrevia()" [disabled]="!corpo().html">
+            {{ previa() ? 'Fechar pré-visualização' : 'Pré-visualizar' }}
+          </button>
+        </div>
+
+        <div class="cartao pilha">
+          @if (bloqueios().length) {
+            <ul class="small faltando">
+              @for (b of bloqueios(); track b) { <li>{{ b }}</li> }
+            </ul>
+          }
+          @if (erro()) { <p class="erro" role="alert">{{ erro() }}</p> }
+          @if (ok()) {
+            <p class="sucesso" role="status">{{ ok() }}
+              @if (publicadoAtual() && editando()) { <a [routerLink]="['/c', slug()]">Ver página</a> }
+            </p>
+          }
+          <button class="btn" type="button" (click)="salvar(true)" [disabled]="salvando() || bloqueios().length">
+            {{ salvando() ? 'Salvando…' : 'Publicar' }}
+          </button>
+          <button class="btn sec" type="button" (click)="salvar(false)" [disabled]="salvando() || bloqueios().length">Salvar rascunho</button>
+          @if (editando()) {
+            <p class="small muted">Ao salvar, a versão atual vai para “Versões anteriores”. Mantenha os ids das seções para as dúvidas continuarem no lugar.</p>
+          }
+        </div>
+      </aside>
+    </div>
+  }
+</div>

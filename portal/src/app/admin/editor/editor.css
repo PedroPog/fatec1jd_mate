@@ -1,0 +1,25 @@
+.grade { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); align-items: start; margin-top: 12px; }
+@media (min-width: 980px) { .grade { grid-template-columns: minmax(0, 1fr) 320px; } }
+.principal { display: grid; gap: 16px; min-width: 0; }
+.lateral { display: grid; gap: 16px; }
+@media (min-width: 980px) { .lateral { position: sticky; top: calc(var(--topo) + 16px); } }
+h2 { font-size: 1.3rem; margin: 0; }
+.arquivo {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  border: 1px dashed var(--line); border-radius: 6px; padding: 8px 12px; background: var(--card);
+}
+.arquivo.vazio { color: var(--muted); }
+.ext { font-family: "JetBrains Mono", monospace; font-weight: 600; color: var(--pen); min-width: 3.4em; }
+.nome { flex: 1; min-width: 120px; overflow-wrap: anywhere; font-size: .92rem; }
+.perigo { color: var(--red) !important; }
+.colar textarea { font-size: .8rem; }
+.desab { opacity: .5; pointer-events: none; }
+.img-url { gap: 8px; }
+.url { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: .75rem; }
+.previa { width: 100%; height: 70vh; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+.check { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .9rem; }
+.okc { color: var(--ok); font-weight: 700; }
+.secoes { margin: 0; padding-left: 22px; max-height: 240px; overflow-y: auto; display: grid; gap: 2px; }
+.faltando { margin: 0; padding-left: 18px; color: var(--muted); }
+.aviso { margin: 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

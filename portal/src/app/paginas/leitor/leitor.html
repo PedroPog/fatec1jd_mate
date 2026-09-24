@@ -1,0 +1,179 @@
+@if (erro() && !conteudo()) {
+  <div class="pagina estreita">
+    <p class="aviso">{{ erro() }}</p>
+    <a routerLink="/">← Voltar aos conteúdos</a>
+  </div>
+} @else if (!conteudo()) {
+  <div class="pagina"><p class="carregando">Abrindo conteúdo…</p></div>
+} @else {
+  <div class="leitor">
+    <div class="barra-info">
+      <a routerLink="/" class="voltar" aria-label="Voltar aos conteúdos">←</a>
+      <div class="titulo">
+        <span class="tag materia">{{ conteudo()!.materia }}</span>
+        <span class="nome">{{ conteudo()!.titulo }}</span>
+      </div>
+      <div class="linha">
+        <button class="btn peq" [class.sec]="painel() !== 'duvidas'" (click)="alternarPainel('duvidas')" [attr.aria-expanded]="painel() === 'duvidas'">
+          Dúvidas @if (abertasTotal()) { <span class="bolha">{{ abertasTotal() }}</span> }
+        </button>
+        @if (materiais().length) {
+          <button class="btn peq" [class.sec]="painel() !== 'material'" (click)="alternarPainel('material')" [attr.aria-expanded]="painel() === 'material'">
+            Material ({{ materiais().length }})
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="corpo">
+      <iframe
+        #quadro
+        class="quadro"
+        title="Conteúdo: {{ conteudo()!.titulo }}"
+        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms allow-modals allow-downloads"
+        referrerpolicy="no-referrer"
+        [srcdoc]="srcdoc()"
+      ></iframe>
+
+      @if (painel()) {
+        <aside class="painel" [attr.aria-label]="painel() === 'duvidas' ? 'Dúvidas e anotações' : 'Material de apoio'">
+          <div class="painel-topo">
+            <h2>{{ painel() === 'duvidas' ? 'Dúvidas e anotações' : 'Material de apoio' }}</h2>
+            <button class="btn link" (click)="painel.set(null)" aria-label="Fechar painel">Fechar</button>
+          </div>
+
+          @if (painel() === 'material') {
+            <ul class="materiais">
+              @for (m of materiais(); track m.id) {
+                <li>
+                  <a [href]="m.url" target="_blank" rel="noopener">{{ m.titulo }}</a>
+                  <span class="small muted">{{ m.tipo.toUpperCase() }} @if (m.tamanho) { · {{ tamanho(m.tamanho) }} }</span>
+                  @if (m.descricao) { <span class="small">{{ m.descricao }}</span> }
+                </li>
+              }
+            </ul>
+          } @else {
+            <label class="campo">
+              <span>Seção</span>
+              <select [value]="secaoAtiva() ?? ''" (change)="escolherSecao($any($event.target).value)">
+                <option value="">Todas as seções</option>
+                @for (s of secoes(); track s.id) {
+                  <option [value]="s.id" [selected]="s.id === secaoAtiva()">{{ s.titulo }}{{ contagens()[s.id] ? ' (' + contagens()[s.id] + ')' : '' }}</option>
+                }
+              </select>
+            </label>
+
+            @if (erroForm()) { <p class="erro" role="alert">{{ erroForm() }}</p> }
+
+            <div class="lista">
+              @for (a of visiveis(); track a.id) {
+                <article class="nota" [class.duvida]="a.tipo === 'duvida'">
+                  <div class="msg">
+                    @if (a.autorFoto) { <img class="avatar peq" [src]="a.autorFoto" alt="" referrerpolicy="no-referrer"> }
+                    @else { <span class="avatar peq">{{ a.autorNome[0] }}</span> }
+                    <span class="quem">
+                      <b>{{ a.autorNome }}</b>
+                      <span>{{ a.tipo === 'duvida' ? 'dúvida' : 'anotação' }}</span>
+                      @if (a.visibilidade === 'privada') { <span class="selo">só você</span> }
+                      @if (a.resolvida) { <span class="selo ok">resolvida</span> }
+                      <span>· {{ quando(a.criadoEm) }}</span>
+                    </span>
+                    @if (!secaoAtiva()) {
+                      <button class="btn link small secao-link" (click)="abrirSecao(a.secaoId); irParaSecao(a.secaoId)">{{ a.secaoTitulo }}</button>
+                    }
+                    <p class="texto">{{ a.texto }}</p>
+                    <div class="acoes">
+                      @if (a.tipo === 'duvida') {
+                        <button class="btn link" (click)="expandida.set(expandida() === a.id ? null : a.id)">
+                          {{ a.totalRespostas }} {{ a.totalRespostas === 1 ? 'resposta' : 'respostas' }}
+                        </button>
+                      }
+                      @if (podeGerir(a)) {
+                        @if (a.tipo === 'duvida') {
+                          <button class="btn link" (click)="resolver(a)">{{ a.resolvida ? 'Reabrir' : 'Marcar resolvida' }}</button>
+                          @if (a.topicoId) {
+                            <a [routerLink]="['/forum/t', a.topicoId]">Ver no fórum</a>
+                          } @else {
+                            <button class="btn link" (click)="levarAoForum(a)">Levar ao fórum</button>
+                          }
+                        }
+                        @if (confirmando() === a.id) {
+                          <span>Excluir mesmo?</span>
+                          <button class="btn link perigo-txt" (click)="excluir(a)">Sim, excluir</button>
+                          <button class="btn link" (click)="confirmando.set(null)">Não</button>
+                        } @else {
+                          <button class="btn link perigo-txt" (click)="confirmando.set(a.id)">Excluir</button>
+                        }
+                      } @else if (a.topicoId) {
+                        <a [routerLink]="['/forum/t', a.topicoId]">Ver no fórum</a>
+                      }
+                    </div>
+                  </div>
+
+                  @if (expandida() === a.id) {
+                    <div class="respostas">
+                      @for (r of respostas(); track r.id) {
+                        <div class="msg">
+                          @if (r.autorFoto) { <img class="avatar peq" [src]="r.autorFoto" alt="" referrerpolicy="no-referrer"> }
+                          @else { <span class="avatar peq">{{ r.autorNome[0] }}</span> }
+                          <span class="quem"><b>{{ r.autorNome }}</b> · {{ quando(r.criadoEm) }}</span>
+                          <p class="texto">{{ r.texto }}</p>
+                          @if (auth.admin() || r.autorUid === auth.usuario()?.uid) {
+                            <div class="acoes"><button class="btn link perigo-txt" (click)="excluirResposta(a, r)">Excluir</button></div>
+                          }
+                        </div>
+                      } @empty {
+                        <p class="vazio small">Ainda sem respostas.</p>
+                      }
+                      @if (auth.logado()) {
+                        <form class="responder" (submit)="$event.preventDefault(); responder(a)">
+                          <label class="sr" for="resp-{{ a.id }}">Sua resposta</label>
+                          <textarea id="resp-{{ a.id }}" class="caixa" rows="2" placeholder="Sua resposta" [value]="textoResposta()" (input)="textoResposta.set($any($event.target).value)"></textarea>
+                          <button class="btn peq" type="submit" [disabled]="!textoResposta().trim()">Responder</button>
+                        </form>
+                      }
+                    </div>
+                  }
+                </article>
+              } @empty {
+                <p class="vazio small">
+                  {{ secaoAtiva() ? 'Nenhuma dúvida nesta seção ainda.' : 'Nenhuma dúvida neste conteúdo ainda. Clique no marcador de uma seção para começar.' }}
+                </p>
+              }
+            </div>
+
+            @if (auth.logado()) {
+              <form class="nova" (submit)="$event.preventDefault(); publicar()">
+                <p class="small muted">Em: <b>{{ nomeSecao(secaoAtiva() ?? '__pagina') }}</b></p>
+                <div class="seg" role="group" aria-label="Tipo">
+                  <button type="button" [attr.aria-pressed]="tipo() === 'duvida'" (click)="tipo.set('duvida')">Dúvida</button>
+                  <button type="button" [attr.aria-pressed]="tipo() === 'anotacao'" (click)="tipo.set('anotacao')">Anotação</button>
+                </div>
+                @if (tipo() === 'anotacao') {
+                  <div class="seg" role="group" aria-label="Quem vê">
+                    <button type="button" [attr.aria-pressed]="visibilidade() === 'privada'" (click)="visibilidade.set('privada')">Só eu</button>
+                    <button type="button" [attr.aria-pressed]="visibilidade() === 'publica'" (click)="visibilidade.set('publica')">Turma vê</button>
+                  </div>
+                } @else {
+                  <p class="small muted">Dúvidas ficam visíveis para todos e podem receber respostas.</p>
+                }
+                <label class="sr" for="nova-texto">Texto</label>
+                <textarea id="nova-texto" class="caixa" rows="3"
+                  [placeholder]="tipo() === 'duvida' ? 'Ex.: não entendi o passo 3 do exemplo' : 'Sua anotação'"
+                  [value]="texto()" (input)="texto.set($any($event.target).value)"></textarea>
+                <button class="btn" type="submit" [disabled]="enviando() || !texto().trim()">
+                  {{ enviando() ? 'Publicando…' : (tipo() === 'duvida' ? 'Publicar dúvida' : 'Salvar anotação') }}
+                </button>
+              </form>
+            } @else {
+              <div class="entrar">
+                <span class="small">Entre para perguntar, responder ou anotar.</span>
+                <button class="btn sec peq" (click)="entrar()">Entrar com Google</button>
+              </div>
+            }
+          }
+        </aside>
+      }
+    </div>
+  </div>
+}

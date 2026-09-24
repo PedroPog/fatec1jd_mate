@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conjuntos e Lógica Proposicional: resumo para estudar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Kalam:wght@400;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFBFE; --grid:#E4EBF6; --card:#FFFFFF; --ink:#232834; --muted:#5A6376;
+  --pen:#1E3F9A; --red:#C3363F; --hl:#FFF0A3; --hl-ink:#232834; --line:#CAD5E7; --code:#F1F4FA;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+    --pen:#93B2FF; --red:#FF7D86; --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C; --code:#11161F;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+  --pen:#93B2FF; --red:#FF7D86; --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C; --code:#11161F;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font:17px/1.65 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+img,svg{max-width:100%}
+a{color:var(--pen)}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--pen);outline-offset:2px;border-radius:3px}
+
+.hero{max-width:1120px;margin:0 auto;padding:40px 20px 8px;display:grid;gap:12px 40px;align-items:center}
+@media (min-width:820px){.hero{grid-template-columns:1.1fr 1fr}}
+.hero h1{font-family:Kalam,"Comic Sans MS",cursive;font-weight:700;color:var(--pen);font-size:clamp(2.4rem,6vw,3.6rem);line-height:1.05;margin:0 0 12px}
+.hero p{margin:0 0 10px;max-width:46ch;color:var(--ink)}
+.hero .legend{color:var(--muted);font-size:.95rem}
+.hero figure{margin:0}
+.hero figcaption{font-family:"STIX Two Text",Cambria,serif;font-size:1.15rem;text-align:center;color:var(--ink)}
+
+.wrap{max-width:1120px;margin:0 auto;padding:16px 20px 64px;display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
+@media (min-width:1000px){.wrap{grid-template-columns:220px minmax(0,1fr);gap:40px}}
+nav.toc{font-size:.95rem}
+@media (min-width:1000px){nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto}}
+nav.toc h2{font-family:Kalam,cursive;font-size:1.3rem;margin:0 0 4px;color:var(--pen)}
+nav.toc ol{list-style:none;margin:0 0 14px;padding:0}
+nav.toc li a{display:block;padding:3px 0;color:var(--ink);text-decoration:none}
+nav.toc li a:hover{color:var(--pen);text-decoration:underline}
+nav.toc .part{font-family:Kalam,cursive;color:var(--red);font-size:1.05rem;margin-top:6px}
+
+main{border-left:2px solid var(--red);padding-left:18px;min-width:0}
+@media (min-width:700px){main{padding-left:32px}}
+main section{margin-bottom:40px}
+main p, main ul, main ol{max-width:70ch}
+.part-title{font-family:Kalam,cursive;font-weight:700;color:var(--pen);font-size:clamp(2rem,4.5vw,2.6rem);margin:8px 0 4px;line-height:1.1}
+.part-sub{color:var(--muted);margin:0 0 28px}
+h3{font-family:Kalam,cursive;font-weight:700;font-size:1.55rem;line-height:1.2;margin:0 0 8px;color:var(--ink)}
+h3 .n{color:var(--red);margin-right:8px}
+h4{font-size:1.02rem;margin:18px 0 6px}
+
+.m{font-family:"STIX Two Text","Cambria Math",Cambria,"Times New Roman",serif;font-size:1.08em;white-space:nowrap}
+.big{font-family:"STIX Two Text","Cambria Math",Cambria,serif;font-size:1.3rem;display:block;margin:4px 0}
+
+.copy{position:relative;background:var(--hl);color:var(--hl-ink);padding:22px 18px 14px;margin:16px 0;border-radius:3px 12px 4px 14px;max-width:70ch}
+.copy::before{content:"✎ copie no caderno";position:absolute;top:4px;right:12px;font-family:Kalam,cursive;font-size:.9rem;color:var(--red)}
+.copy p{margin:4px 0}
+.copy ul{margin:4px 0;padding-left:20px}
+
+.tip{border-left:4px solid var(--red);background:var(--card);padding:10px 16px;margin:16px 0;max-width:70ch}
+.tip strong.t{font-family:Kalam,cursive;color:var(--red);font-size:1.1rem;font-weight:700;display:block}
+.tip p{margin:4px 0}
+
+.ex{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:16px 0;max-width:70ch}
+.ex strong.t{font-family:Kalam,cursive;color:var(--pen);font-size:1.1rem;font-weight:700;display:block}
+.ex p{margin:4px 0}
+.ex ol, .ex ul{margin:6px 0;padding-left:22px}
+
+.scroll{overflow-x:auto;margin:14px 0;max-width:100%}
+table{border-collapse:collapse;background:var(--card)}
+th,td{border:1px solid var(--line);padding:6px 12px;text-align:center;vertical-align:top}
+th{font-family:"STIX Two Text","Cambria Math",serif;font-weight:600;font-size:1.02rem;white-space:nowrap}
+table.text td,table.text th{text-align:left}
+table.text th{font-family:inherit}
+td.v{color:var(--pen);font-weight:700}
+td.f{color:var(--red);font-weight:700}
+td.res{background:var(--hl);color:var(--hl-ink)}
+td.res.v{color:var(--pen)}
+td.res.f{color:var(--red)}
+
+.venns{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin:16px 0;max-width:760px}
+.venns figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px}
+.venns figcaption{font-size:.9rem;text-align:center;color:var(--muted)}
+.venns figcaption b{display:block;font-family:"STIX Two Text",serif;font-size:1.1rem;color:var(--ink)}
+svg .u{fill:none;stroke:var(--line);stroke-width:1.5}
+svg .sh{fill:var(--hl)}
+svg .st{fill:none;stroke:var(--pen);stroke-width:2}
+svg .lbl{fill:var(--pen);font:700 15px Kalam,cursive}
+svg .num{fill:var(--ink);font:600 13px "Atkinson Hyperlegible",sans-serif;text-anchor:middle}
+
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;font:14px/1.55 ui-monospace,"SF Mono",Menlo,Consolas,monospace;max-width:70ch}
+code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.92em}
+
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:10px 0;max-width:70ch}
+summary{cursor:pointer;font-weight:700}
+details .ans{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+details .ans p{margin:4px 0}
+.steps{counter-reset:s;list-style:none;padding-left:0}
+.steps li{counter-increment:s;position:relative;padding-left:34px;margin:8px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;border:2px solid var(--pen);color:var(--pen);font:700 13px/20px "Atkinson Hyperlegible",sans-serif;text-align:center}
+.deriv{margin:10px 0 6px;display:grid;gap:0}
+.dl{display:flex;flex-wrap:wrap;gap:2px 18px;align-items:baseline;padding:5px 0;border-bottom:1px dotted var(--line)}
+.dl .m{font-size:1.1rem;white-space:normal}
+.dl .law{color:var(--muted);font-size:.9rem}
+.topbar{max-width:1120px;margin:0 auto;padding:14px 20px 0;display:flex;gap:18px;flex-wrap:wrap;font-size:.95rem}
+.topbar a{color:var(--pen);font-weight:700}
+footer{max-width:1120px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+
+<div class="topbar"><a href="https://claude.ai/artifact/SC3iQqyTQ5d4DG3h9KRire" target="_blank" rel="noopener">Índice e exercícios aleatórios</a></div>
+<header class="hero">
+  <div>
+    <h1>Conjuntos e Lógica Proposicional</h1>
+    <p>Resumo das aulas 01 (Teoria dos Conjuntos) e 02 (Lógica Proposicional), com exemplos resolvidos passo a passo e exercícios com gabarito.</p>
+    <p class="legend">As caixas amarelas marcadas com ✎ são o essencial para passar para o caderno. O resto é explicação e exemplo.</p>
+  </div>
+  <figure>
+    <svg viewBox="0 0 320 190" role="img" aria-label="Diagrama de Venn: a interseção de A e B corresponde a p e q">
+      <defs><clipPath id="hA"><circle cx="125" cy="92" r="66"/></clipPath></defs>
+      <circle class="sh" cx="195" cy="92" r="66" clip-path="url(#hA)"/>
+      <circle class="st" cx="125" cy="92" r="66"/>
+      <circle class="st" cx="195" cy="92" r="66"/>
+      <text class="lbl" x="58" y="34" style="font-size:20px">A</text>
+      <text class="lbl" x="252" y="34" style="font-size:20px">B</text>
+      <text class="lbl" x="90" y="98">x ∈ A</text>
+      <text class="lbl" x="196" y="98">x ∈ B</text>
+      <text class="lbl" x="160" y="98" text-anchor="middle" style="font-size:18px">∧</text>
+    </svg>
+    <figcaption>A ∩ B é o “e” (∧) da lógica. As duas aulas falam da mesma ideia.</figcaption>
+  </figure>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Sumário">
+  <h2>Sumário</h2>
+  <div class="part">Parte 1: Conjuntos</div>
+  <ol>
+    <li><a href="#c1">O que é um conjunto</a></li>
+    <li><a href="#c2">Como representar</a></li>
+    <li><a href="#c3">Pertinência (∈)</a></li>
+    <li><a href="#c4">Conjuntos especiais</a></li>
+    <li><a href="#c5">Igualdade</a></li>
+    <li><a href="#c6">Inclusão (⊂)</a></li>
+    <li><a href="#c7">Conjunto das partes</a></li>
+    <li><a href="#c8">Operações</a></li>
+    <li><a href="#c9">Contando elementos</a></li>
+    <li><a href="#c10">Propriedades e De Morgan</a></li>
+  </ol>
+  <div class="part">Parte 2: Lógica</div>
+  <ol>
+    <li><a href="#l1">Proposição</a></li>
+    <li><a href="#l2">Conectivos</a></li>
+    <li><a href="#l3">Tabela-verdade</a></li>
+    <li><a href="#l4">Ordem dos conectivos</a></li>
+    <li><a href="#l5">Tautologia, contradição, contingência</a></li>
+    <li><a href="#l6">Implicação e equivalência</a></li>
+    <li><a href="#l7">Leis de equivalência</a></li>
+    <li><a href="#l8">Simplificando expressões</a></li>
+    <li><a href="#l9">Técnicas de demonstração</a></li>
+  </ol>
+  <div class="part">Fechamento</div>
+  <ol>
+    <li><a href="#p1">Conjuntos ↔ lógica</a></li>
+    <li><a href="#p2">No código (Kotlin)</a></li>
+    <li><a href="#p3">Exercícios com gabarito</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<h2 class="part-title">Parte 1: Teoria dos Conjuntos</h2>
+<p class="part-sub">Aula 01. Como agrupar coisas e fazer contas com esses grupos.</p>
+
+<section id="c1">
+<h3><span class="n">1.1</span>O que é um conjunto</h3>
+<p>Um <b>conjunto</b> é uma coleção de objetos <b>bem definida</b>. “Bem definida” quer dizer que, para qualquer objeto, dá para responder com certeza: ele está ou não está no conjunto. Cada objeto do conjunto se chama <b>elemento</b>.</p>
+<div class="copy">
+  <p><b>Conjunto</b> = coleção bem definida de objetos. <b>Elemento</b> = cada objeto dela.</p>
+  <p>Conjuntos: letra <b>maiúscula</b> (A, B, X). Elementos: letra <b>minúscula</b> (a, b, x).</p>
+  <p><b>Finito</b>: dá para contar até o fim. <b>Infinito</b>: nunca acaba.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplos</strong>
+  <ul>
+    <li>Dias em que uma pessoa nada: segunda, quarta, sexta. Finito.</li>
+    <li>Vogais: a, e, i, o, u. Finito.</li>
+    <li>Números pares: 0, 2, 4, 6, 8… Infinito.</li>
+  </ul>
+</div>
+</section>
+
+<section id="c2">
+<h3><span class="n">1.2</span>Como representar um conjunto</h3>
+<p>Existem três jeitos, e todos descrevem a mesma coisa.</p>
+<div class="copy">
+  <p><b>Por enumeração</b> (listando): <span class="m">A = {a, e, i, o, u}</span></p>
+  <p><b>Por propriedade</b>: <span class="m">A = {x | x é vogal}</span>. O símbolo <span class="m">|</span> se lê “tal que”.</p>
+  <p><b>Diagrama de Venn</b>: uma “bolha” com os elementos dentro.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplo</strong>
+  <p>O conjunto dos pares maiores que 0 e menores que 15:</p>
+  <p>Enumeração: <span class="m">A = {2, 4, 6, 8, 10, 12, 14}</span></p>
+  <p>Propriedade: <span class="m">A = {x | x é par e 0 &lt; x &lt; 15}</span>, lido como “x tal que x é par, maior que zero e menor que 15”.</p>
+</div>
+</section>
+
+<section id="c3">
+<h3><span class="n">1.3</span>Pertinência: ∈ e ∉</h3>
+<p>Pertinência responde uma pergunta simples: <i>este elemento está dentro deste conjunto?</i></p>
+<div class="copy">
+  <p><span class="m">x ∈ A</span> → x <b>pertence</b> a A</p>
+  <p><span class="m">x ∉ A</span> → x <b>não pertence</b> a A</p>
+  <p>Pertinência sempre liga <b>elemento → conjunto</b>.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplo</strong>
+  <p><span class="m">A = {a, e, i, o, u}</span>: &nbsp;<span class="m">a ∈ A</span>, &nbsp;<span class="m">e ∈ A</span>, &nbsp;<span class="m">b ∉ A</span>, &nbsp;<span class="m">w ∉ A</span></p>
+  <p><span class="m">X = {x | x é primo positivo}</span>: &nbsp;<span class="m">2 ∈ X</span>, &nbsp;<span class="m">13 ∈ X</span>, &nbsp;<span class="m">8 ∉ X</span>, &nbsp;<span class="m">1 ∉ X</span> (1 não é primo).</p>
+</div>
+</section>
+
+<section id="c4">
+<h3><span class="n">1.4</span>Conjuntos especiais</h3>
+<div class="copy">
+  <p><b>Universo (U)</b>: o conjunto maior onde tudo que estamos estudando está. Ex.: U = as 26 letras do alfabeto, A = as vogais.</p>
+  <p><b>Unitário</b>: tem um único elemento. Ex.: <span class="m">A = {2}</span></p>
+  <p><b>Vazio</b>: não tem nenhum elemento. Escreve-se <span class="m">∅</span> ou <span class="m">{ }</span></p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplo de vazio</strong>
+  <p><span class="m">A = {x | x é um habitante da Terra com mais de 200 anos}</span> → <span class="m">A = ∅</span></p>
+</div>
+<div class="tip">
+  <strong class="t">Pegadinha</strong>
+  <p><span class="m">{∅}</span> <b>não</b> é vazio. É uma caixa com uma coisa dentro, então é unitário. Para o vazio, escreva <span class="m">∅</span> ou <span class="m">{ }</span>, nunca os dois juntos.</p>
+</div>
+</section>
+
+<section id="c5">
+<h3><span class="n">1.5</span>Conjuntos iguais</h3>
+<div class="copy">
+  <p>A = B quando os dois têm <b>exatamente os mesmos elementos</b>.</p>
+  <p class="big">A = B ⇔ (∀x | x ∈ A ⇔ x ∈ B)</p>
+  <p>Leitura: “para todo x, x está em A se e somente se x está em B”.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplos</strong>
+  <p><span class="m">{1, 2, 3, 4} = {3, 1, 4, 2}</span> → a ordem não importa.</p>
+  <p><span class="m">{1, 1, 2} = {1, 2}</span> → repetir não muda nada.</p>
+  <p><span class="m">{1, 5, 7, 9, 10} ≠ {1, 5, 7, 8, 10}</span> → o 9 e o 8 são diferentes.</p>
+</div>
+</section>
+
+<section id="c6">
+<h3><span class="n">1.6</span>Inclusão: subconjuntos (⊂)</h3>
+<p>A é <b>subconjunto</b> de B quando <b>todo</b> elemento de A também está em B. Pense em “A cabe inteiro dentro de B”.</p>
+<div class="copy">
+  <p><span class="m">A ⊂ B</span> → A <b>está contido</b> em B</p>
+  <p><span class="m">B ⊃ A</span> → B <b>contém</b> A</p>
+  <p><span class="m">A ⊄ B</span> → A não está contido em B (tem pelo menos um elemento fora)</p>
+  <p class="big">A ⊂ B ⇔ (∀x | x ∈ A ⇒ x ∈ B)</p>
+  <p>Sempre vale: <span class="m">∅ ⊂ A</span> (vazio é subconjunto de todo conjunto) e <span class="m">A ⊂ A</span>.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplos</strong>
+  <p><span class="m">A = {1, 5}</span>, <span class="m">B = {1, 5, 7, 9, 10}</span> → <span class="m">A ⊂ B</span></p>
+  <p><span class="m">C = {5, 6, 3, 2}</span>, <span class="m">D = {3, 5, 7, 6}</span> → <span class="m">C ⊄ D</span>, porque <span class="m">2 ∈ C</span> mas <span class="m">2 ∉ D</span>.</p>
+</div>
+<div class="tip">
+  <strong class="t">A regra que mais cai em prova</strong>
+  <p><span class="m">∈</span> liga <b>elemento</b> com conjunto. <span class="m">⊂</span> liga <b>conjunto</b> com conjunto.</p>
+  <p>Com <span class="m">A = {0, 1}</span>: &nbsp;<span class="m">1 ∈ A</span> ✔ &nbsp; <span class="m">{1} ⊂ A</span> ✔ &nbsp; <span class="m">1 ⊂ A</span> ✘ &nbsp; <span class="m">{1} ∈ A</span> ✘</p>
+</div>
+</section>
+
+<section id="c7">
+<h3><span class="n">1.7</span>Conjunto das partes P(A)</h3>
+<p>É o conjunto formado por <b>todos</b> os subconjuntos de A, incluindo o vazio e o próprio A.</p>
+<div class="copy">
+  <p class="big">n(P(A)) = 2<sup>n(A)</sup></p>
+  <p><span class="m">n(A)</span> = número de elementos de A.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplo</strong>
+  <p><span class="m">A = {x, y, z}</span>, então <span class="m">n(A) = 3</span> e <span class="m">n(P(A)) = 2³ = 8</span>:</p>
+  <p><span class="m">P(A) = {∅, {x}, {y}, {z}, {x, y}, {x, z}, {y, z}, {x, y, z}}</span></p>
+  <p>Por que 2<sup>n</sup>? Para montar um subconjunto, cada elemento tem 2 opções: entra ou não entra. Com 3 elementos: 2 × 2 × 2 = 8.</p>
+</div>
+</section>
+
+<section id="c8">
+<h3><span class="n">1.8</span>Operações com conjuntos</h3>
+<p>A parte pintada de amarelo em cada diagrama é o resultado da operação.</p>
+
+<div class="venns">
+  <figure>
+    <svg viewBox="0 0 200 130" role="img" aria-label="União: os dois círculos pintados">
+      <rect class="u" x="4" y="4" width="192" height="122" rx="6"/>
+      <circle class="sh" cx="80" cy="65" r="42"/><circle class="sh" cx="120" cy="65" r="42"/>
+      <circle class="st" cx="80" cy="65" r="42"/><circle class="st" cx="120" cy="65" r="42"/>
+      <text class="lbl" x="30" y="28">A</text><text class="lbl" x="162" y="28">B</text>
+    </svg>
+    <figcaption><b>A ∪ B</b>União: está em A <b style="display:inline;font-family:inherit;font-size:inherit">ou</b> em B</figcaption>
+  </figure>
+  <figure>
+    <svg viewBox="0 0 200 130" role="img" aria-label="Interseção: só a parte comum pintada">
+      <defs><clipPath id="vA2"><circle cx="80" cy="65" r="42"/></clipPath></defs>
+      <rect class="u" x="4" y="4" width="192" height="122" rx="6"/>
+      <circle class="sh" cx="120" cy="65" r="42" clip-path="url(#vA2)"/>
+      <circle class="st" cx="80" cy="65" r="42"/><circle class="st" cx="120" cy="65" r="42"/>
+      <text class="lbl" x="30" y="28">A</text><text class="lbl" x="162" y="28">B</text>
+    </svg>
+    <figcaption><b>A ∩ B</b>Interseção: está em A <b style="display:inline;font-family:inherit;font-size:inherit">e</b> em B</figcaption>
+  </figure>
+  <figure>
+    <svg viewBox="0 0 200 130" role="img" aria-label="Diferença A menos B: só a parte de A fora de B pintada">
+      <defs><mask id="vM3"><rect width="200" height="130" fill="black"/><circle cx="80" cy="65" r="42" fill="white"/><circle cx="120" cy="65" r="42" fill="black"/></mask></defs>
+      <rect class="u" x="4" y="4" width="192" height="122" rx="6"/>
+      <rect class="sh" width="200" height="130" mask="url(#vM3)"/>
+      <circle class="st" cx="80" cy="65" r="42"/><circle class="st" cx="120" cy="65" r="42"/>
+      <text class="lbl" x="30" y="28">A</text><text class="lbl" x="162" y="28">B</text>
+    </svg>
+    <figcaption><b>A − B</b>Diferença: está em A e não está em B</figcaption>
+  </figure>
+  <figure>
+    <svg viewBox="0 0 200 130" role="img" aria-label="Complementar de A: tudo do universo fora de A pintado">
+      <defs><mask id="vM4"><rect width="200" height="130" fill="black"/><rect x="4" y="4" width="192" height="122" rx="6" fill="white"/><circle cx="100" cy="65" r="42" fill="black"/></mask></defs>
+      <rect class="sh" width="200" height="130" mask="url(#vM4)"/>
+      <rect class="u" x="4" y="4" width="192" height="122" rx="6"/>
+      <circle class="st" cx="100" cy="65" r="42"/>
+      <text class="lbl" x="92" y="70">A</text><text class="lbl" x="12" y="24">U</text>
+    </svg>
+    <figcaption><b>Ā = U − A</b>Complementar: tudo do universo fora de A</figcaption>
+  </figure>
+</div>
+
+<div class="copy">
+  <p><b>União</b>: <span class="m">A ∪ B = {x | x ∈ A ou x ∈ B}</span> → junta tudo, sem repetir.</p>
+  <p><b>Interseção</b>: <span class="m">A ∩ B = {x | x ∈ A e x ∈ B}</span> → só o que é comum.</p>
+  <p><b>Disjuntos</b>: quando <span class="m">A ∩ B = ∅</span> (nada em comum).</p>
+  <p><b>Diferença</b>: <span class="m">A − B = {x | x ∈ A e x ∉ B}</span> → o que só A tem. Em geral <span class="m">A − B ≠ B − A</span>.</p>
+  <p><b>Complementar</b>: se <span class="m">B ⊂ A</span>, então <span class="m">∁<sub>A</sub>B = A − B</span>. Em relação ao universo: <span class="m">Ā = ∁A = U − A</span>.</p>
+</div>
+
+<div class="ex">
+  <strong class="t">Exemplo resolvido</strong>
+  <p>A = pares naturais menores que 10, B = primos menores que 10.</p>
+  <p>Primeiro liste: <span class="m">A = {0, 2, 4, 6, 8}</span> e <span class="m">B = {2, 3, 5, 7}</span>.</p>
+  <svg viewBox="0 0 260 130" style="max-width:320px;display:block;margin:8px 0" role="img" aria-label="Venn com 0 4 6 8 só em A, 2 no meio, 3 5 7 só em B">
+    <defs><clipPath id="eA"><circle cx="105" cy="65" r="55"/></clipPath></defs>
+    <circle class="sh" cx="155" cy="65" r="55" clip-path="url(#eA)"/>
+    <circle class="st" cx="105" cy="65" r="55"/><circle class="st" cx="155" cy="65" r="55"/>
+    <text class="lbl" x="40" y="22">A</text><text class="lbl" x="212" y="22">B</text>
+    <text class="num" x="80" y="45">0</text><text class="num" x="68" y="72">4</text><text class="num" x="95" y="72">6</text><text class="num" x="82" y="98">8</text>
+    <text class="num" x="130" y="70">2</text>
+    <text class="num" x="178" y="48">3</text><text class="num" x="192" y="72">5</text><text class="num" x="176" y="96">7</text>
+  </svg>
+  <p><span class="m">A ∪ B = {0, 2, 3, 4, 5, 6, 7, 8}</span></p>
+  <p><span class="m">A ∩ B = {2}</span></p>
+  <p><span class="m">A − B = {0, 4, 6, 8}</span></p>
+  <p><span class="m">B − A = {3, 5, 7}</span></p>
+</div>
+
+<div class="ex">
+  <strong class="t">Exemplo: complementar</strong>
+  <p><span class="m">X = {1, 2, 4}</span>, <span class="m">Y = {1, 2, 3, 4, 5}</span>. Como <span class="m">X ⊂ Y</span>: <span class="m">∁<sub>Y</sub>X = Y − X = {3, 5}</span></p>
+  <p>Se <span class="m">A = {x ∈ ℝ | x &gt; 2}</span>, então <span class="m">Ā = {x ∈ ℝ | x ≤ 2}</span>. Repare que o 2 vai para o complementar.</p>
+</div>
+
+<div class="tip">
+  <strong class="t">Pegadinha: ∁A ∩ B não é o mesmo que ∁(A ∩ B)</strong>
+  <p><span class="m">U = {a, b, c, d, e, f, g, h}</span>, <span class="m">A = {a, b, c, d, e}</span>, <span class="m">B = {d, e, f, g}</span></p>
+  <p><span class="m">∁A ∩ B</span>: primeiro <span class="m">∁A = {f, g, h}</span>, depois <span class="m">∩ B = {f, g}</span>.</p>
+  <p><span class="m">∁(A ∩ B)</span>: primeiro <span class="m">A ∩ B = {d, e}</span>, depois o complementar: <span class="m">{a, b, c, f, g, h}</span>.</p>
+  <p>O parêntese muda tudo: resolva sempre o que está dentro dele primeiro.</p>
+</div>
+</section>
+
+<section id="c9">
+<h3><span class="n">1.9</span>Contando elementos (problemas de pesquisa)</h3>
+<p>Quando você soma n(A) + n(B), quem está nos dois foi contado <b>duas vezes</b>. Por isso se tira a interseção uma vez.</p>
+<div class="copy">
+  <p class="big">n(A ∪ B) = n(A) + n(B) − n(A ∩ B)</p>
+  <p>Só em um dos dois: <span class="m">n(A) + n(B) − 2·n(A ∩ B)</span></p>
+  <p class="big" style="font-size:1.08rem">n(A∪B∪C) = n(A) + n(B) + n(C) − n(A∩B) − n(A∩C) − n(B∩C) + n(A∩B∩C)</p>
+  <p><b>Método seguro</b>: preencha o diagrama <b>de dentro para fora</b> (comece pela interseção).</p>
+</div>
+
+<div class="ex">
+  <strong class="t">Exemplo com 2 conjuntos</strong>
+  <p>Escola com 630 alunos: 250 estudam matemática, 210 física e 90 estudam as duas.</p>
+  <ol class="steps">
+    <li>Meio (as duas): <b>90</b></li>
+    <li>Só matemática: 250 − 90 = <b>160</b></li>
+    <li>Só física: 210 − 90 = <b>120</b></li>
+    <li>Matemática ou física: 160 + 90 + 120 = <b>370</b> (ou pela fórmula: 250 + 210 − 90 = 370)</li>
+    <li>Só uma das duas: 160 + 120 = <b>280</b></li>
+    <li>Nenhuma: 630 − 370 = <b>260</b></li>
+  </ol>
+  <p>Se o problema der “260 não estudam nenhuma” e pedir a interseção, faz ao contrário: <span class="m">n(A∪B) = 630 − 260 = 370</span>, então <span class="m">370 = 250 + 210 − x</span> e <span class="m">x = 90</span>.</p>
+</div>
+
+<div class="ex">
+  <strong class="t">Exemplo com 3 conjuntos (jornais)</strong>
+  <p>600 leitores. Leem A: 300, B: 220, C: 150. A e B: 100, B e C: 80, A e C: 50. Os três: 20.</p>
+  <svg viewBox="0 0 300 250" style="max-width:340px;display:block;margin:8px 0" role="img" aria-label="Venn de 3 conjuntos com os valores preenchidos">
+    <rect class="u" x="4" y="4" width="292" height="242" rx="6"/>
+    <circle class="st" cx="115" cy="95" r="70"/><circle class="st" cx="185" cy="95" r="70"/><circle class="st" cx="150" cy="155" r="70"/>
+    <text class="lbl" x="40" y="35">A</text><text class="lbl" x="250" y="35">B</text><text class="lbl" x="220" y="235">C</text><text class="lbl" x="12" y="236">U</text>
+    <text class="num" x="85" y="80">170</text><text class="num" x="215" y="80">60</text><text class="num" x="150" y="200">40</text>
+    <text class="num" x="150" y="70">80</text><text class="num" x="112" y="148">30</text><text class="num" x="188" y="148">60</text>
+    <text class="num" x="150" y="122" style="fill:var(--red)">20</text>
+    <text class="num" x="270" y="230">140</text>
+  </svg>
+  <ol class="steps">
+    <li>Centro (os três): <b>20</b></li>
+    <li>Só A e B: 100 − 20 = <b>80</b> &nbsp;|&nbsp; só B e C: 80 − 20 = <b>60</b> &nbsp;|&nbsp; só A e C: 50 − 20 = <b>30</b></li>
+    <li>Só A: 300 − 80 − 30 − 20 = <b>170</b></li>
+    <li>Só B: 220 − 80 − 60 − 20 = <b>60</b></li>
+    <li>Só C: 150 − 30 − 60 − 20 = <b>40</b></li>
+    <li>Leem algum: 170 + 60 + 40 + 80 + 60 + 30 + 20 = <b>460</b>. Nenhum: 600 − 460 = <b>140</b></li>
+  </ol>
+  <p>Respostas: somente um jornal = 170 + 60 + 40 = <b>270</b>; somente dois = 80 + 60 + 30 = <b>170</b>; pelo menos dois = 170 + 20 = <b>190</b>.</p>
+  <p>Conferindo pela fórmula: 300 + 220 + 150 − 100 − 80 − 50 + 20 = 460 ✔</p>
+</div>
+<div class="tip">
+  <strong class="t">Atenção às palavras</strong>
+  <p>“Somente dois” não inclui quem lê os três. “Pelo menos dois” inclui (dois <b>ou mais</b>).</p>
+</div>
+</section>
+
+<section id="c10">
+<h3><span class="n">1.10</span>Propriedades e Leis de De Morgan</h3>
+<div class="scroll"><table class="text">
+  <tr><th>Propriedade</th><th>O que diz</th></tr>
+  <tr><td>Comutativa</td><td class="m">A ∪ B = B ∪ A &nbsp;&nbsp; A ∩ B = B ∩ A</td></tr>
+  <tr><td>Associativa</td><td class="m">A ∪ (B ∪ C) = (A ∪ B) ∪ C</td></tr>
+  <tr><td>Distributiva</td><td class="m">A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)</td></tr>
+  <tr><td>Idempotente</td><td class="m">A ∪ A = A &nbsp;&nbsp; A ∩ A = A</td></tr>
+  <tr><td>Vazio</td><td class="m">A ∪ ∅ = A &nbsp;&nbsp; A ∩ ∅ = ∅</td></tr>
+  <tr><td>Universo</td><td class="m">A ∩ U = A</td></tr>
+  <tr><td>Inclusão</td><td class="m">A ⊂ B ⇔ A ∪ B = B ⇔ A ∩ B = A</td></tr>
+</table></div>
+<div class="copy">
+  <p><b>De Morgan</b>: troca ∪ por ∩ (ou ao contrário) e complementa cada um.</p>
+  <p class="big">(A ∪ B)<sup>c</sup> = A<sup>c</sup> ∩ B<sup>c</sup></p>
+  <p class="big">(A ∩ B)<sup>c</sup> = A<sup>c</sup> ∪ B<sup>c</sup></p>
+</div>
+</section>
+
+<h2 class="part-title">Parte 2: Lógica Proposicional</h2>
+<p class="part-sub">Aula 02. Como decidir se frases são verdadeiras ou falsas quando são combinadas.</p>
+
+<section id="l1">
+<h3><span class="n">2.1</span>Proposição</h3>
+<p>Uma <b>proposição</b> é uma frase <b>declarativa</b> que é <b>verdadeira (V) ou falsa (F)</b>, nunca as duas ao mesmo tempo.</p>
+<div class="copy">
+  <p><b>Proposição</b>: frase afirmativa com valor V ou F.</p>
+  <p><b>Não é proposição</b>: pergunta, ordem, exclamação, ou frase com variável solta (ex.: “x &gt; 3” sem saber x).</p>
+  <p>Representamos por letras minúsculas: p, q, r… e escrevemos <span class="m">V(p) = V</span> para “o valor de p é verdadeiro”.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplos</strong>
+  <p>“Brasil é um país” → V &nbsp;|&nbsp; “Buenos Aires é a capital do Brasil” → F &nbsp;|&nbsp; “7 − 1 = 5” → F</p>
+  <p>Não são proposições: “Vá tomar banho.” (ordem) &nbsp;|&nbsp; “Que horas são?” (pergunta)</p>
+</div>
+</section>
+
+<section id="l2">
+<h3><span class="n">2.2</span>Os 5 conectivos</h3>
+<p>Conectivos juntam proposições simples para formar proposições compostas.</p>
+<div class="scroll"><table class="text">
+  <tr><th>Símbolo</th><th>Nome</th><th>Leitura</th><th>Regra para decorar</th></tr>
+  <tr><td class="m">¬p</td><td>Negação</td><td>não p</td><td>Inverte: V vira F, F vira V</td></tr>
+  <tr><td class="m">p ∧ q</td><td>Conjunção</td><td>p e q</td><td>Só é V se <b>os dois</b> forem V</td></tr>
+  <tr><td class="m">p ∨ q</td><td>Disjunção</td><td>p ou q</td><td>Só é F se <b>os dois</b> forem F</td></tr>
+  <tr><td class="m">p → q</td><td>Condicional</td><td>se p, então q</td><td>Só é F em <b>V → F</b></td></tr>
+  <tr><td class="m">p ↔ q</td><td>Bicondicional</td><td>p se e somente se q</td><td>É V quando os dois são <b>iguais</b></td></tr>
+</table></div>
+
+<div class="ex">
+  <strong class="t">Entendendo o “se… então” com uma promessa</strong>
+  <p>“Se você tirar 10, então eu te dou um bolo.” A promessa só é <b>quebrada</b> (F) quando você tira 10 e não ganha o bolo. Se você não tirou 10, a promessa não foi quebrada, ganhando o bolo ou não.</p>
+  <p>p = “tirou 10” é o <b>antecedente</b>; q = “ganha bolo” é o <b>consequente</b>.</p>
+</div>
+<div class="ex">
+  <strong class="t">Entendendo o “se e somente se”</strong>
+  <p>“Você será aprovado se e somente se tiver média 7.” É V quando as duas coisas acontecem juntas ou nenhuma acontece. É F quando só uma acontece (média 7 e reprovado, ou aprovado sem média 7).</p>
+</div>
+</section>
+
+<section id="l3">
+<h3><span class="n">2.3</span>Tabela-verdade</h3>
+<p>A tabela-verdade mostra o resultado para <b>todas</b> as combinações possíveis de V e F.</p>
+<div class="copy">
+  <div class="scroll" style="margin:6px 0"><table class="tv">
+    <tr><th>p</th><th>q</th><th>¬p</th><th>p ∧ q</th><th>p ∨ q</th><th>p → q</th><th>p ↔ q</th></tr>
+    <tr><td>V</td><td>V</td><td>F</td><td>V</td><td>V</td><td>V</td><td>V</td></tr>
+    <tr><td>V</td><td>F</td><td>F</td><td>F</td><td>V</td><td>F</td><td>F</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td>F</td><td>V</td><td>V</td><td>F</td></tr>
+    <tr><td>F</td><td>F</td><td>V</td><td>F</td><td>F</td><td>V</td><td>V</td></tr>
+  </table></div>
+  <p><b>Número de linhas</b> = 2<sup>n</sup> (n = quantidade de letras diferentes). 1 letra → 2 linhas, 2 letras → 4, 3 letras → 8.</p>
+</div>
+<div class="ex">
+  <strong class="t">Como preencher as colunas iniciais sem errar</strong>
+  <p>Com 3 letras (8 linhas): a 1ª coluna tem 4 V e 4 F, a 2ª alterna de 2 em 2, a 3ª alterna de 1 em 1.</p>
+  <div class="scroll"><table class="tv">
+    <tr><th>p</th><td>V</td><td>V</td><td>V</td><td>V</td><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+    <tr><th>q</th><td>V</td><td>V</td><td>F</td><td>F</td><td>V</td><td>V</td><td>F</td><td>F</td></tr>
+    <tr><th>r</th><td>V</td><td>F</td><td>V</td><td>F</td><td>V</td><td>F</td><td>V</td><td>F</td></tr>
+  </table></div>
+</div>
+<div class="ex">
+  <strong class="t">Exercícios rápidos (do slide)</strong>
+  <p>Se <span class="m">V(q) = V</span> e <span class="m">V(p ∧ q) = F</span>, então <span class="m">V(p) = F</span> (se p fosse V, o “e” daria V).</p>
+  <p>Se <span class="m">V(q) = F</span> e <span class="m">V(p → q) = F</span>, então <span class="m">V(p) = V</span> (o único F do “se… então” é V → F).</p>
+  <p>Se <span class="m">V(q) = F</span> e <span class="m">V(p ∨ q) = F</span>, então <span class="m">V(p) = F</span>.</p>
+</div>
+</section>
+
+<section id="l4">
+<h3><span class="n">2.4</span>Ordem dos conectivos e montando uma tabela</h3>
+<div class="copy">
+  <p><b>Ordem (do primeiro ao último)</b>:</p>
+  <p class="big">( ) → ¬ → ∧ e ∨ → → → ↔</p>
+  <p>Parênteses de dentro para fora, depois negação, depois “e”/“ou”, depois “se… então”, por último “se e somente se”.</p>
+</div>
+<div class="ex">
+  <strong class="t">Leitura correta</strong>
+  <p><span class="m">¬p ∨ q</span> significa <span class="m">(¬p) ∨ q</span>, e não <span class="m">¬(p ∨ q)</span>.</p>
+  <p><span class="m">p ∧ q → r</span> significa <span class="m">(p ∧ q) → r</span>.</p>
+</div>
+<div class="ex">
+  <strong class="t">Montando passo a passo: ¬(p ∨ ¬q)</strong>
+  <p>Faça uma coluna para cada pedaço, do menor para o maior.</p>
+  <div class="scroll"><table class="tv">
+    <tr><th>p</th><th>q</th><th>¬q</th><th>p ∨ ¬q</th><th>¬(p ∨ ¬q)</th></tr>
+    <tr><td>V</td><td>V</td><td>F</td><td>V</td><td class="res">F</td></tr>
+    <tr><td>V</td><td>F</td><td>V</td><td>V</td><td class="res">F</td></tr>
+    <tr><td>F</td><td>V</td><td>F</td><td>F</td><td class="res">V</td></tr>
+    <tr><td>F</td><td>F</td><td>V</td><td>V</td><td class="res">F</td></tr>
+  </table></div>
+  <p>Resultado: só é V quando p = F e q = V, ou seja, é o mesmo que <span class="m">¬p ∧ q</span>.</p>
+</div>
+</section>
+
+<section id="l5">
+<h3><span class="n">2.5</span>Tautologia, contradição e contingência</h3>
+<p>Olhe só para a <b>última coluna</b> da tabela:</p>
+<div class="copy">
+  <p><b>Tautologia</b>: só V. Ex.: <span class="m">p ∨ ¬p</span> (ou chove ou não chove).</p>
+  <p><b>Contradição</b>: só F. Ex.: <span class="m">p ∧ ¬p</span> (chove e não chove).</p>
+  <p><b>Contingência</b>: mistura de V e F. Ex.: <span class="m">p ∨ q</span>.</p>
+</div>
+<div class="scroll"><table class="tv">
+  <tr><th>p</th><th>¬p</th><th>p ∨ ¬p</th><th>p ∧ ¬p</th></tr>
+  <tr><td>V</td><td>F</td><td class="res">V</td><td class="res">F</td></tr>
+  <tr><td>F</td><td>V</td><td class="res">V</td><td class="res">F</td></tr>
+</table></div>
+<div class="ex">
+  <strong class="t">Classificações do slide</strong>
+  <p>Tautologias: <span class="m">p → p</span>, &nbsp;<span class="m">(p → q) ∨ (q → p)</span>, &nbsp;<span class="m">p → (q → p)</span></p>
+  <p>Contradição: <span class="m">p ↔ ¬p</span></p>
+  <p>Contingências: <span class="m">p ∨ q ∨ r</span>, &nbsp;<span class="m">(p ∧ q) ∨ (¬p ∧ q)</span></p>
+</div>
+</section>
+
+<section id="l6">
+<h3><span class="n">2.6</span>Implicação (⇒) e equivalência (⇔ ou ≡)</h3>
+<div class="copy">
+  <p><span class="m">p ⇒ q</span> (p <b>implica</b> q) quando <span class="m">p → q</span> é <b>tautologia</b>.</p>
+  <p><span class="m">p ⇔ q</span> ou <span class="m">p ≡ q</span> (p é <b>equivalente</b> a q) quando <span class="m">p ↔ q</span> é <b>tautologia</b>. Quer dizer: escrita diferente, mesmo significado.</p>
+</div>
+<div class="tip">
+  <strong class="t">Não confunda</strong>
+  <p>A seta <span class="m">→</span> é um conectivo (uma operação que pode dar V ou F). O <span class="m">⇒</span> é uma afirmação de que essa seta dá <b>sempre</b> V. A tabela do → sozinha não é tautologia.</p>
+</div>
+<div class="ex">
+  <strong class="t">Exemplo: adição, p ⇒ p ∨ q</strong>
+  <div class="scroll"><table class="tv">
+    <tr><th>p</th><th>q</th><th>p ∨ q</th><th>p → (p ∨ q)</th></tr>
+    <tr><td>V</td><td>V</td><td>V</td><td class="res">V</td></tr>
+    <tr><td>V</td><td>F</td><td>V</td><td class="res">V</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td class="res">V</td></tr>
+    <tr><td>F</td><td>F</td><td>F</td><td class="res">V</td></tr>
+  </table></div>
+  <p>Última coluna toda V → é tautologia → a implicação vale. Da mesma forma, <b>simplificação</b>: <span class="m">p ∧ q ⇒ p</span>.</p>
+</div>
+</section>
+
+<section id="l7">
+<h3><span class="n">2.7</span>Leis de equivalência (as “ferramentas”)</h3>
+<p>Estas são as regras usadas para simplificar expressões. Todas podem ser provadas com tabela-verdade.</p>
+<div class="copy">
+<div class="scroll" style="margin:6px 0"><table class="text">
+  <tr><th>Lei</th><th>Expressão</th></tr>
+  <tr><td>Dupla negação</td><td class="m">¬¬p ≡ p</td></tr>
+  <tr><td>Idempotência</td><td class="m">p ∧ p ≡ p &nbsp;&nbsp; p ∨ p ≡ p</td></tr>
+  <tr><td>Comutativa</td><td class="m">p ∧ q ≡ q ∧ p &nbsp;&nbsp; p ∨ q ≡ q ∨ p</td></tr>
+  <tr><td>Associativa</td><td class="m">p ∧ (q ∧ r) ≡ (p ∧ q) ∧ r</td></tr>
+  <tr><td>Distributiva</td><td class="m">p ∧ (q ∨ r) ≡ (p ∧ q) ∨ (p ∧ r)<br>p ∨ (q ∧ r) ≡ (p ∨ q) ∧ (p ∨ r)</td></tr>
+  <tr><td>Absorção</td><td class="m">p ∧ (p ∨ q) ≡ p &nbsp;&nbsp; p ∨ (p ∧ q) ≡ p</td></tr>
+  <tr><td>De Morgan</td><td class="m">¬(p ∧ q) ≡ ¬p ∨ ¬q<br>¬(p ∨ q) ≡ ¬p ∧ ¬q</td></tr>
+  <tr><td>Terceiro excluído</td><td class="m">p ∨ ¬p ≡ V</td></tr>
+  <tr><td>Contradição</td><td class="m">p ∧ ¬p ≡ F</td></tr>
+  <tr><td>Identidade</td><td class="m">p ∧ V ≡ p &nbsp;&nbsp; p ∨ F ≡ p</td></tr>
+  <tr><td>Dominação</td><td class="m">p ∨ V ≡ V &nbsp;&nbsp; p ∧ F ≡ F</td></tr>
+  <tr><td>Condicional</td><td class="m">p → q ≡ ¬p ∨ q</td></tr>
+  <tr><td>Negação do condicional</td><td class="m">¬(p → q) ≡ p ∧ ¬q</td></tr>
+  <tr><td>Contrapositiva</td><td class="m">p → q ≡ ¬q → ¬p</td></tr>
+  <tr><td>Bicondicional</td><td class="m">p ↔ q ≡ (p → q) ∧ (q → p)</td></tr>
+</table></div>
+</div>
+<div class="tip">
+  <strong class="t">Pegadinha clássica</strong>
+  <p><span class="m">p → q</span> <b>não</b> é equivalente a <span class="m">q → p</span> (a recíproca). “Se chove, a rua molha” não garante “se a rua molha, choveu” (pode ter sido um caminhão-pipa).</p>
+  <p>O que é equivalente é a <b>contrapositiva</b>: “se a rua não molhou, não choveu”.</p>
+</div>
+<div class="ex">
+  <strong class="t">Regras de raciocínio (argumentos válidos)</strong>
+  <p><b>Modus Ponens</b>: <span class="m">[(p → q) ∧ p] ⇒ q</span>. “Se chove, levo guarda-chuva. Choveu. Logo, levo.”</p>
+  <p><b>Modus Tollens</b>: <span class="m">[(p → q) ∧ ¬q] ⇒ ¬p</span>. “Se chove, levo guarda-chuva. Não levei. Logo, não choveu.”</p>
+  <p><b>Silogismo hipotético</b>: <span class="m">[(p → q) ∧ (q → r)] ⇒ (p → r)</span>. A seta “passa adiante”.</p>
+  <p><b>Silogismo disjuntivo</b>: <span class="m">[(p ∨ q) ∧ ¬p] ⇒ q</span>. “É café ou chá. Não é café. Logo, é chá.”</p>
+</div>
+</section>
+
+<section id="l8">
+<h3><span class="n">2.8</span>Simplificando expressões (álgebra proposicional)</h3>
+<p>Simplificar é trocar uma expressão por outra <b>equivalente e mais curta</b>, usando as leis de 2.7. Funciona como uma conta de álgebra: cada linha é equivalente à anterior (por isso o sinal <span class="m">≡</span>), e ao lado você anota qual lei usou. Assim você não precisa montar tabela-verdade.</p>
+
+<div class="copy">
+  <p><b>Roteiro em 4 etapas</b> (siga nessa ordem):</p>
+  <ol class="steps">
+    <li><b>Tire as setas.</b> &nbsp;<span class="m">p → q ≡ ¬p ∨ q</span>, &nbsp;<span class="m">p ↔ q ≡ (p → q) ∧ (q → p)</span>, &nbsp;<span class="m">¬(p → q) ≡ p ∧ ¬q</span></li>
+    <li><b>Empurre o ¬ para dentro</b> dos parênteses com De Morgan e dupla negação, até o ¬ ficar só na frente das letras.</li>
+    <li><b>Procure o que se repete</b> e use a distributiva (ou coloque em evidência) para juntar os pedaços parecidos.</li>
+    <li><b>Limpe</b> com as regras rápidas abaixo.</li>
+  </ol>
+  <p><b>Regras de limpeza:</b> &nbsp;<span class="m">p ∨ ¬p ≡ V</span> &nbsp;·&nbsp; <span class="m">p ∧ ¬p ≡ F</span> &nbsp;·&nbsp; <span class="m">p ∧ V ≡ p</span> &nbsp;·&nbsp; <span class="m">p ∨ F ≡ p</span> &nbsp;·&nbsp; <span class="m">p ∨ V ≡ V</span> &nbsp;·&nbsp; <span class="m">p ∧ F ≡ F</span> &nbsp;·&nbsp; <span class="m">p ∧ p ≡ p</span> &nbsp;·&nbsp; <span class="m">p ∧ (p ∨ q) ≡ p</span> &nbsp;·&nbsp; <span class="m">p ∨ (p ∧ q) ≡ p</span></p>
+</div>
+
+<h4>Como escrever no caderno</h4>
+<p>Uma linha por passo: a expressão à esquerda e a lei à direita. Veja os exemplos curtos neste formato:</p>
+
+<div class="ex">
+  <strong class="t">Curto 1: (p ∧ q) ∨ (p ∧ ¬q)</strong>
+  <div class="deriv">
+    <div class="dl"><span class="m">(p ∧ q) ∨ (p ∧ ¬q)</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ p ∧ (q ∨ ¬q)</span><span class="law">distributiva (p em evidência)</span></div>
+    <div class="dl"><span class="m">≡ p ∧ V</span><span class="law">terceiro excluído</span></div>
+    <div class="dl"><span class="m">≡ <b>p</b></span><span class="law">identidade</span></div>
+  </div>
+</div>
+<div class="ex">
+  <strong class="t">Curto 2: ¬(p ∨ ¬q)</strong>
+  <div class="deriv">
+    <div class="dl"><span class="m">¬(p ∨ ¬q)</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ ¬p ∧ ¬¬q</span><span class="law">De Morgan</span></div>
+    <div class="dl"><span class="m">≡ <b>¬p ∧ q</b></span><span class="law">dupla negação (bate com a tabela de 2.4)</span></div>
+  </div>
+</div>
+<div class="ex">
+  <strong class="t">Curto 3: (p → q) ∧ p</strong>
+  <div class="deriv">
+    <div class="dl"><span class="m">(p → q) ∧ p</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ (¬p ∨ q) ∧ p</span><span class="law">condicional</span></div>
+    <div class="dl"><span class="m">≡ (¬p ∧ p) ∨ (q ∧ p)</span><span class="law">distributiva</span></div>
+    <div class="dl"><span class="m">≡ F ∨ (q ∧ p)</span><span class="law">contradição</span></div>
+    <div class="dl"><span class="m">≡ <b>p ∧ q</b></span><span class="law">identidade e comutativa</span></div>
+  </div>
+</div>
+<div class="ex">
+  <strong class="t">Curto 4: ¬[p → (q ∧ r)]</strong>
+  <div class="deriv">
+    <div class="dl"><span class="m">¬[p → (q ∧ r)]</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ p ∧ ¬(q ∧ r)</span><span class="law">negação do condicional (¬(p → Q) ≡ p ∧ ¬Q)</span></div>
+    <div class="dl"><span class="m">≡ <b>p ∧ (¬q ∨ ¬r)</b></span><span class="law">De Morgan</span></div>
+  </div>
+</div>
+
+<h4>Exemplos grandes, passo a passo</h4>
+
+<div class="ex">
+  <strong class="t">Grande 1: (p ∨ q) ∧ ¬(¬p ∧ q)</strong>
+  <p><i>Estratégia:</i> tem um ¬ na frente de parênteses, então primeiro De Morgan (etapa 2). Depois os dois lados vão começar com “p ∨ …”, e aí dá para colocar p em evidência (etapa 3).</p>
+  <div class="deriv">
+    <div class="dl"><span class="m">(p ∨ q) ∧ ¬(¬p ∧ q)</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ (p ∨ q) ∧ (¬¬p ∨ ¬q)</span><span class="law">De Morgan no segundo parêntese</span></div>
+    <div class="dl"><span class="m">≡ (p ∨ q) ∧ (p ∨ ¬q)</span><span class="law">dupla negação</span></div>
+    <div class="dl"><span class="m">≡ p ∨ (q ∧ ¬q)</span><span class="law">distributiva ao contrário (p em evidência)</span></div>
+    <div class="dl"><span class="m">≡ p ∨ F</span><span class="law">contradição</span></div>
+    <div class="dl"><span class="m">≡ <b>p</b></span><span class="law">identidade</span></div>
+  </div>
+  <p><i>Conferindo com a tabela</i> (a última coluna tem que ser igual à coluna de p):</p>
+  <div class="scroll"><table class="tv">
+    <tr><th>p</th><th>q</th><th>p ∨ q</th><th>¬p ∧ q</th><th>¬(¬p ∧ q)</th><th>(p ∨ q) ∧ ¬(¬p ∧ q)</th></tr>
+    <tr><td>V</td><td>V</td><td>V</td><td>F</td><td>V</td><td class="res">V</td></tr>
+    <tr><td>V</td><td>F</td><td>V</td><td>F</td><td>V</td><td class="res">V</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td>V</td><td>F</td><td class="res">F</td></tr>
+    <tr><td>F</td><td>F</td><td>F</td><td>F</td><td>V</td><td class="res">F</td></tr>
+  </table></div>
+  <p>A última coluna é V, V, F, F, exatamente igual a p. ✔</p>
+</div>
+
+<div class="ex">
+  <strong class="t">Grande 2: ¬[(p → q) ∨ ¬p]</strong>
+  <p><i>Estratégia:</i> o ¬ de fora pega tudo. Aplique De Morgan primeiro e só depois cuide da seta que ficou negada.</p>
+  <div class="deriv">
+    <div class="dl"><span class="m">¬[(p → q) ∨ ¬p]</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ ¬(p → q) ∧ ¬¬p</span><span class="law">De Morgan (o “ou” vira “e”)</span></div>
+    <div class="dl"><span class="m">≡ ¬(p → q) ∧ p</span><span class="law">dupla negação</span></div>
+    <div class="dl"><span class="m">≡ (p ∧ ¬q) ∧ p</span><span class="law">negação do condicional</span></div>
+    <div class="dl"><span class="m">≡ (p ∧ p) ∧ ¬q</span><span class="law">comutativa e associativa (juntar os p)</span></div>
+    <div class="dl"><span class="m">≡ <b>p ∧ ¬q</b></span><span class="law">idempotência</span></div>
+  </div>
+  <p>Leitura: a expressão só é verdadeira quando p = V e q = F.</p>
+</div>
+
+<div class="ex">
+  <strong class="t">Grande 3 (três letras): (p ∧ q) ∨ (p ∧ ¬q ∧ r) ∨ (p ∧ ¬r)</strong>
+  <p><i>Estratégia:</i> os três parênteses começam com “p ∧”. Coloque p em evidência e simplifique o que sobrou dentro dos colchetes.</p>
+  <div class="deriv">
+    <div class="dl"><span class="m">(p ∧ q) ∨ (p ∧ ¬q ∧ r) ∨ (p ∧ ¬r)</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ p ∧ [q ∨ (¬q ∧ r) ∨ ¬r]</span><span class="law">distributiva (p em evidência)</span></div>
+    <div class="dl"><span class="m">≡ p ∧ [((q ∨ ¬q) ∧ (q ∨ r)) ∨ ¬r]</span><span class="law">distributiva em q ∨ (¬q ∧ r)</span></div>
+    <div class="dl"><span class="m">≡ p ∧ [(V ∧ (q ∨ r)) ∨ ¬r]</span><span class="law">terceiro excluído</span></div>
+    <div class="dl"><span class="m">≡ p ∧ [q ∨ r ∨ ¬r]</span><span class="law">identidade</span></div>
+    <div class="dl"><span class="m">≡ p ∧ [q ∨ V]</span><span class="law">terceiro excluído (r ∨ ¬r)</span></div>
+    <div class="dl"><span class="m">≡ p ∧ V</span><span class="law">dominação</span></div>
+    <div class="dl"><span class="m">≡ <b>p</b></span><span class="law">identidade</span></div>
+  </div>
+  <p>Uma expressão com 3 letras e 8 linhas de tabela virou só “p”. Esse é o ganho de simplificar.</p>
+</div>
+
+<div class="ex">
+  <strong class="t">Grande 4: provar que Modus Tollens é tautologia, [(p → q) ∧ ¬q] → ¬p</strong>
+  <p><i>Estratégia:</i> para provar que algo é tautologia sem tabela, simplifique até chegar em <span class="m">V</span>. São duas setas, então a etapa 1 aparece duas vezes.</p>
+  <div class="deriv">
+    <div class="dl"><span class="m">[(p → q) ∧ ¬q] → ¬p</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ ¬[(¬p ∨ q) ∧ ¬q] ∨ ¬p</span><span class="law">condicional (nas duas setas)</span></div>
+    <div class="dl"><span class="m">≡ ¬(¬p ∨ q) ∨ ¬¬q ∨ ¬p</span><span class="law">De Morgan no colchete</span></div>
+    <div class="dl"><span class="m">≡ (p ∧ ¬q) ∨ q ∨ ¬p</span><span class="law">De Morgan de novo e dupla negação</span></div>
+    <div class="dl"><span class="m">≡ [(p ∨ q) ∧ (¬q ∨ q)] ∨ ¬p</span><span class="law">distributiva em (p ∧ ¬q) ∨ q</span></div>
+    <div class="dl"><span class="m">≡ [(p ∨ q) ∧ V] ∨ ¬p</span><span class="law">terceiro excluído</span></div>
+    <div class="dl"><span class="m">≡ p ∨ q ∨ ¬p</span><span class="law">identidade</span></div>
+    <div class="dl"><span class="m">≡ (p ∨ ¬p) ∨ q</span><span class="law">comutativa</span></div>
+    <div class="dl"><span class="m">≡ V ∨ q</span><span class="law">terceiro excluído</span></div>
+    <div class="dl"><span class="m">≡ <b>V</b></span><span class="law">dominação: é tautologia ✔</span></div>
+  </div>
+</div>
+
+<div class="ex">
+  <strong class="t">Grande 5 (desafio): [(p → q) ∧ (q → p)] ∨ (p ∧ ¬q)</strong>
+  <p><i>Estratégia:</i> depois de tirar as setas, repare que <span class="m">p ∧ ¬q</span> é exatamente a negação de <span class="m">¬p ∨ q</span>. Quando algo aparece junto com a própria negação num “ou”, vira V.</p>
+  <div class="deriv">
+    <div class="dl"><span class="m">[(p → q) ∧ (q → p)] ∨ (p ∧ ¬q)</span><span class="law">expressão inicial</span></div>
+    <div class="dl"><span class="m">≡ [(¬p ∨ q) ∧ (¬q ∨ p)] ∨ (p ∧ ¬q)</span><span class="law">condicional (nas duas setas)</span></div>
+    <div class="dl"><span class="m">≡ [(¬p ∨ q) ∨ (p ∧ ¬q)] ∧ [(¬q ∨ p) ∨ (p ∧ ¬q)]</span><span class="law">distributiva do ∨ sobre o ∧</span></div>
+    <div class="dl"><span class="m">≡ [(¬p ∨ q) ∨ ¬(¬p ∨ q)] ∧ [(¬q ∨ p) ∨ (p ∧ ¬q)]</span><span class="law">De Morgan ao contrário: p ∧ ¬q ≡ ¬(¬p ∨ q)</span></div>
+    <div class="dl"><span class="m">≡ V ∧ [(¬q ∨ p) ∨ (p ∧ ¬q)]</span><span class="law">terceiro excluído</span></div>
+    <div class="dl"><span class="m">≡ ¬q ∨ [p ∨ (p ∧ ¬q)]</span><span class="law">identidade e associativa</span></div>
+    <div class="dl"><span class="m">≡ ¬q ∨ p</span><span class="law">absorção</span></div>
+    <div class="dl"><span class="m">≡ <b>p ∨ ¬q</b></span><span class="law">comutativa (é o mesmo que q → p)</span></div>
+  </div>
+</div>
+
+<div class="tip">
+  <strong class="t">Erros mais comuns</strong>
+  <p>✘ <span class="m">¬(p ∧ q) ≡ ¬p ∧ ¬q</span> &nbsp;→&nbsp; ✔ <span class="m">¬p ∨ ¬q</span> (De Morgan <b>troca</b> o conectivo).</p>
+  <p>✘ <span class="m">¬(p → q) ≡ ¬p → ¬q</span> &nbsp;→&nbsp; ✔ <span class="m">p ∧ ¬q</span> (o ¬ não “distribui” na seta).</p>
+  <p>✘ <span class="m">p → q ≡ q → p</span> &nbsp;→&nbsp; ✔ só a contrapositiva vale: <span class="m">¬q → ¬p</span>.</p>
+  <p>✘ Tirar parênteses entre ∧ e ∨ misturados: <span class="m">(p ∧ q) ∨ r</span> e <span class="m">p ∧ (q ∨ r)</span> são diferentes.</p>
+  <p>✘ Pular a lei: se não souber dizer qual lei usou naquela linha, provavelmente o passo está errado.</p>
+</div>
+
+<div class="tip" style="border-left-color:var(--pen)">
+  <strong class="t" style="color:var(--pen)">Como conferir a sua resposta</strong>
+  <p>Escolha valores (por exemplo p = V, q = F) e calcule a expressão original e a sua simplificada. Se der diferente, tem erro. Se der igual em <b>todas</b> as combinações (a tabela inteira), está certo.</p>
+</div>
+
+<h4>Treino da lista do slide</h4>
+<details><summary>Simplifique p ∨ (p ∧ q)</summary><div class="ans">
+  <p><span class="m">≡ p</span> &nbsp;(absorção: se p é V, tudo é V; se p é F, os dois lados são F).</p></div></details>
+<details><summary>Simplifique (p ∧ q ∧ r) ∨ (p ∧ q ∧ ¬r)</summary><div class="ans">
+  <p><span class="m">≡ (p ∧ q) ∧ (r ∨ ¬r)</span> distributiva → <span class="m">≡ (p ∧ q) ∧ V</span> terceiro excluído → <span class="m">≡ p ∧ q</span> identidade.</p></div></details>
+<details><summary>Simplifique p ∧ (¬p ∨ q)</summary><div class="ans">
+  <p><span class="m">≡ (p ∧ ¬p) ∨ (p ∧ q)</span> distributiva → <span class="m">≡ F ∨ (p ∧ q)</span> contradição → <span class="m">≡ p ∧ q</span> identidade.</p></div></details>
+<details><summary>Simplifique ¬(¬p ∧ q) ∨ p</summary><div class="ans">
+  <p><span class="m">≡ (p ∨ ¬q) ∨ p</span> De Morgan e dupla negação → <span class="m">≡ p ∨ ¬q</span> comutativa e idempotência.</p></div></details>
+<details><summary>Simplifique r ∨ ¬(r ∨ p)</summary><div class="ans">
+  <p><span class="m">≡ r ∨ (¬r ∧ ¬p)</span> De Morgan → <span class="m">≡ (r ∨ ¬r) ∧ (r ∨ ¬p)</span> distributiva → <span class="m">≡ V ∧ (r ∨ ¬p)</span> → <span class="m">≡ r ∨ ¬p</span> identidade.</p></div></details>
+<details><summary>Simplifique [(p ∧ q) ∨ r] ∧ [(p ∧ q) ∨ ¬r]</summary><div class="ans">
+  <p><span class="m">≡ (p ∧ q) ∨ (r ∧ ¬r)</span> distributiva ao contrário → <span class="m">≡ (p ∧ q) ∨ F</span> contradição → <span class="m">≡ p ∧ q</span> identidade.</p></div></details>
+<p>Quer mais? Na <a href="https://claude.ai/artifact/SC3iQqyTQ5d4DG3h9KRire" target="_blank" rel="noopener">página de exercícios</a>, escolha “Simplificação de expressões” para receber expressões sorteadas com a resolução passo a passo.</p>
+</section>
+
+<section id="l9">
+<h3><span class="n">2.9</span>Técnicas de demonstração</h3>
+<p>Para provar uma afirmação do tipo “se <b>hipótese</b>, então <b>tese</b>” (<span class="m">p → q</span>):</p>
+<div class="copy">
+  <p><b>Prova direta</b>: suponha p verdadeira e chegue em q.</p>
+  <p><b>Contraposição</b>: prove <span class="m">¬q → ¬p</span> (vale porque é equivalente a <span class="m">p → q</span>).</p>
+  <p><b>Redução ao absurdo</b>: suponha p <b>e</b> ¬q e chegue numa contradição. Base: <span class="m">p → q ≡ (p ∧ ¬q) → F</span>.</p>
+</div>
+<div class="ex">
+  <strong class="t">Direta: a soma de dois pares é par</strong>
+  <p>Todo par pode ser escrito como 2 vezes um natural. Sejam <span class="m">n = 2r</span> e <span class="m">m = 2s</span>. Então <span class="m">n + m = 2r + 2s = 2(r + s)</span>. Como <span class="m">r + s</span> é natural, <span class="m">n + m</span> é par. ∎</p>
+</div>
+<div class="ex">
+  <strong class="t">Contraposição: se n! &gt; n + 1, então n &gt; 2</strong>
+  <p>A contrapositiva é: se <span class="m">n ≤ 2</span>, então <span class="m">n! ≤ n + 1</span>. Basta testar os naturais 0, 1 e 2:</p>
+  <p><span class="m">0! = 1 ≤ 1</span> ✔ &nbsp; <span class="m">1! = 1 ≤ 2</span> ✔ &nbsp; <span class="m">2! = 2 ≤ 3</span> ✔ &nbsp;Provado. ∎</p>
+</div>
+<div class="ex">
+  <strong class="t">Absurdo: 0 é o único elemento neutro da adição em ℕ</strong>
+  <p>Suponha que existe outro neutro <span class="m">e ≠ 0</span>. Como 0 é neutro: <span class="m">e + 0 = e</span>. Como e é neutro: <span class="m">e + 0 = 0</span>. Então <span class="m">e = 0</span>, o que contradiz <span class="m">e ≠ 0</span>. Absurdo, logo o neutro é único. ∎</p>
+</div>
+</section>
+
+<h2 class="part-title">Fechamento</h2>
+<p class="part-sub">Ligando as duas aulas e treinando.</p>
+
+<section id="p1">
+<h3><span class="n">3.1</span>Conjuntos e lógica são a mesma coisa</h3>
+<p>Cada operação de conjuntos corresponde a um conectivo. Se você entende um lado, entende o outro.</p>
+<div class="copy">
+<div class="scroll" style="margin:6px 0"><table class="text">
+  <tr><th>Conjuntos</th><th>Lógica</th><th>Por quê</th></tr>
+  <tr><td class="m">A ∪ B</td><td class="m">p ∨ q</td><td>x ∈ A ∪ B ⇔ (x ∈ A) ∨ (x ∈ B)</td></tr>
+  <tr><td class="m">A ∩ B</td><td class="m">p ∧ q</td><td>x ∈ A ∩ B ⇔ (x ∈ A) ∧ (x ∈ B)</td></tr>
+  <tr><td class="m">Ā (complementar)</td><td class="m">¬p</td><td>x ∈ Ā ⇔ ¬(x ∈ A)</td></tr>
+  <tr><td class="m">A ⊂ B</td><td class="m">p → q</td><td>se x ∈ A, então x ∈ B</td></tr>
+  <tr><td class="m">A = B</td><td class="m">p ↔ q</td><td>x ∈ A se e somente se x ∈ B</td></tr>
+  <tr><td class="m">∅ &nbsp;/&nbsp; U</td><td class="m">F &nbsp;/&nbsp; V</td><td>nunca / sempre</td></tr>
+</table></div>
+</div>
+<p>Repare que De Morgan aparece igualzinho nos dois: <span class="m">(A ∪ B)<sup>c</sup> = A<sup>c</sup> ∩ B<sup>c</sup></span> e <span class="m">¬(p ∨ q) ≡ ¬p ∧ ¬q</span>.</p>
+</section>
+
+<section id="p2">
+<h3><span class="n">3.2</span>No código (Kotlin)</h3>
+<p>O slide usa Pascal (<code>not</code>, <code>and</code>, <code>or</code>). Em Kotlin/Java a ideia é a mesma:</p>
+<pre><code>// Lógica
+val p = true
+val q = false
+!p          // ¬p     → false
+p &amp;&amp; q      // p ∧ q  → false
+p || q      // p ∨ q  → true
+!p || q     // p → q  → false  (não há operador pronto de "se... então")
+p == q      // p ↔ q  → false
+
+// Conjuntos
+val a = setOf(0, 2, 4, 6, 8)
+val b = setOf(2, 3, 5, 7)
+a union b        // A ∪ B → [0, 2, 4, 6, 8, 3, 5, 7]
+a intersect b    // A ∩ B → [2]
+a subtract b     // A − B → [0, 4, 6, 8]
+3 in b           // 3 ∈ B → true
+b.containsAll(setOf(3, 5))   // {3, 5} ⊂ B → true</code></pre>
+<p>Curiosidade que o slide mostra em Pascal: como <code>false &lt; true</code>, a expressão <code>p &lt;= q</code> também funciona como <span class="m">p → q</span>.</p>
+</section>
+
+<section id="p3">
+<h3><span class="n">3.3</span>Exercícios com gabarito</h3>
+<p>Tente resolver antes de abrir a resposta.</p>
+
+<h4>Conjuntos</h4>
+<details><summary>1. A = {1, 2, 3} e B = {3, 4}. Calcule A ∪ B, A ∩ B, A − B e B − A.</summary>
+  <div class="ans"><p><span class="m">A ∪ B = {1, 2, 3, 4}</span>, <span class="m">A ∩ B = {3}</span>, <span class="m">A − B = {1, 2}</span>, <span class="m">B − A = {4}</span></p></div>
+</details>
+<details><summary>2. Quantos subconjuntos tem {a, b, c, d}?</summary>
+  <div class="ans"><p>São 4 elementos, então <span class="m">2⁴ = 16</span> subconjuntos.</p></div>
+</details>
+<details><summary>3. Verdadeiro ou falso: 2 ∈ {1, 2, 3}; {2} ∈ {1, 2, 3}; ∅ ⊂ {1}; {1, 2} = {2, 1, 1}.</summary>
+  <div class="ans"><p>V; F (o certo é <span class="m">{2} ⊂ {1, 2, 3}</span>); V; V.</p></div>
+</details>
+<details><summary>4. Numa turma de 40 alunos, 25 gostam de futebol, 20 de vôlei e 8 não gostam de nenhum. Quantos gostam dos dois?</summary>
+  <div class="ans"><p>Gostam de algum: 40 − 8 = 32. Pela fórmula: <span class="m">32 = 25 + 20 − x</span>, então <span class="m">x = 13</span>.</p></div>
+</details>
+
+<h4>Lógica</h4>
+<details><summary>5. Com p = V e q = F, qual o valor de p ∧ q, p ∨ q, p → q, q → p, p ↔ q e ¬p ∨ q?</summary>
+  <div class="ans"><p>F, V, F, V, F, F. (Repare que <span class="m">¬p ∨ q</span> dá o mesmo que <span class="m">p → q</span>.)</p></div>
+</details>
+<details><summary>6. Classifique (p → q) ∨ p.</summary>
+  <div class="ans"><p>Troque o condicional: <span class="m">¬p ∨ q ∨ p</span>. Como <span class="m">¬p ∨ p ≡ V</span>, sobra <span class="m">V ∨ q ≡ V</span>. É <b>tautologia</b>.</p></div>
+</details>
+<details><summary>7. Simplifique ¬(¬p ∧ q).</summary>
+  <div class="ans"><p>De Morgan: <span class="m">¬¬p ∨ ¬q</span>. Dupla negação: <span class="m">p ∨ ¬q</span>.</p></div>
+</details>
+<details><summary>8. Escreva a negação de “Se chove, então levo guarda-chuva”.</summary>
+  <div class="ans"><p>Usando <span class="m">¬(p → q) ≡ p ∧ ¬q</span>: “Chove <b>e</b> não levo guarda-chuva”.</p></div>
+</details>
+<details><summary>9. Escreva a contrapositiva de “Se estudo, então passo”.</summary>
+  <div class="ans"><p><span class="m">¬q → ¬p</span>: “Se não passei, então não estudei”.</p></div>
+</details>
+<details><summary>10. Monte a tabela de p → (p ∨ q) e diga se é tautologia.</summary>
+  <div class="ans"><p>A última coluna dá V, V, V, V (veja o exemplo em 2.6). É tautologia, por isso <span class="m">p ⇒ p ∨ q</span>.</p></div>
+</details>
+</section>
+
+</main>
+</div>
+
+<footer>Baseado nas aulas “Teoria dos Conjuntos” (Aula 01) e “Lógica Proposicional” (Prof. Drausio de Castro). Referência dos slides: DANTE, L. R. Matemática Contexto &amp; Aplicação, vol. 1, Ática, 2014.</footer>
+
+<script>
+document.querySelectorAll('table.tv td').forEach(function(td){
+  var t = td.textContent.trim();
+  if (t === 'V') td.classList.add('v');
+  else if (t === 'F') td.classList.add('f');
+});
+</script>
+</body>
+</html>

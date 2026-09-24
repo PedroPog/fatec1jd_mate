@@ -1,0 +1,13 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "topicos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "materia", "order": "ASCENDING" },
+        { "fieldPath": "ultimaAtividade", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

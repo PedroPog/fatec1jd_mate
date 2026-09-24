@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Conjuntos e Lógica: início</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Kalam:wght@400;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet">
+    <style>
+:root{
+  --paper:#FAFBFE; --grid:#E4EBF6; --card:#FFFFFF; --ink:#232834; --muted:#5A6376;
+  --pen:#1E3F9A; --pen-soft:#E7EDFB; --red:#C3363F; --hl:#FFF0A3; --hl-ink:#232834; --line:#CAD5E7;
+  --good:#1F7A4A; --good-bg:#E4F4EA; --bad-bg:#FBE7E8;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+  --pen:#93B2FF; --pen-soft:#223052; --red:#FF7D86; --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C;
+  --good:#6FD39B; --good-bg:#16301F; --bad-bg:#3A1C20;}}
+:root[data-theme="dark"]{
+  --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+  --pen:#93B2FF; --pen-soft:#223052; --red:#FF7D86; --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C;
+  --good:#6FD39B; --good-bg:#16301F; --bad-bg:#3A1C20;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px)}
+body{margin:0;color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;
+  font:17px/1.6 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+.m{font-family:"STIX Two Text","Cambria Math",Cambria,serif;font-size:1.08em}
+.big{font-family:"STIX Two Text","Cambria Math",Cambria,serif;font-size:1.45rem;margin:6px 0 10px;overflow-wrap:anywhere}
+.big.frase{font-family:inherit;font-size:1.2rem;font-style:italic}
+.hint{color:var(--muted);font-size:.92rem;margin:4px 0}
+
+/* ---------- início ---------- */
+.home{max-width:1000px;margin:0 auto;padding:48px 20px 56px}
+.home h1{font-family:Kalam,cursive;font-weight:700;color:var(--pen);font-size:clamp(2.5rem,7vw,4rem);line-height:1.02;margin:0 0 12px}
+.home .lead{max-width:52ch;margin:0 0 36px;font-size:1.1rem}
+.cards{display:grid;gap:28px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+.icard{display:block;text-align:left;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-top:4px solid var(--pen);
+  border-radius:4px;padding:22px 24px 26px;position:relative;
+  box-shadow:3px 4px 0 var(--pen-soft);transition:transform .15s ease,box-shadow .15s ease;width:100%}
+.icard:hover{transform:translate(-2px,-2px);box-shadow:6px 7px 0 var(--pen-soft)}
+@media (prefers-reduced-motion:reduce){.icard{transition:none}.icard:hover{transform:none}}
+.icard .ico{font-size:2rem;line-height:1}
+.icard h2{font-family:Kalam,cursive;font-size:1.9rem;color:var(--pen);margin:6px 0 0;line-height:1.15;padding-bottom:6px;border-bottom:2px solid var(--red)}
+.icard .lines{background:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px)}
+.icard p{margin:0;line-height:32px}
+.icard .go{display:block;line-height:32px;font-weight:700;color:var(--pen)}
+.icard .go span{background:var(--hl);color:var(--hl-ink);padding:1px 6px;border-radius:3px}
+.topics-preview{margin-top:40px;color:var(--muted);max-width:70ch}
+.topics-preview b{color:var(--ink)}
+
+/* ---------- treino ---------- */
+.trainer{max-width:1120px;margin:0 auto;padding:20px 20px 64px}
+.tbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.tbar h1{font-family:Kalam,cursive;color:var(--pen);font-size:clamp(1.8rem,4.5vw,2.4rem);margin:0}
+.ghost{background:transparent;border:1px solid var(--line);border-radius:6px;padding:8px 14px;color:var(--pen)}
+.ghost:hover{background:var(--pen-soft)}
+.ghost:disabled{opacity:.45;cursor:default}
+.primary{background:var(--pen);color:var(--card);border:0;border-radius:6px;padding:10px 18px;font-weight:700}
+.primary:disabled{opacity:.5;cursor:default}
+.tlay{display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:960px){.tlay{grid-template-columns:300px minmax(0,1fr);gap:36px}}
+aside .gname{font-family:Kalam,cursive;color:var(--red);font-size:1.15rem;margin:14px 0 6px}
+.tg{display:flex;flex-wrap:wrap;gap:8px}
+@media (min-width:960px){.tg{flex-direction:column}}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:7px 12px;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.chip:hover{border-color:var(--pen)}
+.chip.on{background:var(--hl);color:var(--hl-ink);border-color:var(--hl);font-weight:700}
+.chip .sc{font-size:.8rem;color:var(--muted);font-weight:400;white-space:nowrap}
+.chip.on .sc{color:var(--hl-ink)}
+.side-foot{margin-top:18px;font-size:.9rem;color:var(--muted)}
+.side-foot button{margin-top:8px;font-size:.88rem;padding:5px 10px}
+#card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:4px;padding:20px 22px 22px;min-width:0}
+.ttag{margin:0 0 8px;color:var(--muted);font-size:.92rem}
+.q p{margin:6px 0;max-width:68ch}
+.q .ask{font-weight:700;margin-top:12px}
+.opts{display:grid;gap:10px;margin:14px 0}
+.opts.two{grid-template-columns:1fr 1fr;max-width:420px}
+.opt{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:12px 14px;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt:disabled{cursor:default}
+.opt.right,.cell.right{border-color:var(--good);background:var(--good-bg)}
+.opt.wrong,.cell.wrong{border-color:var(--red);background:var(--bad-bg)}
+.inrow{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+.inrow input{flex:1 1 200px;min-width:0;font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:18px;border-top:1px dashed var(--line);padding-top:14px}
+.fb{margin-top:14px;padding:12px 16px;border-radius:6px;background:var(--paper);border:1px solid var(--line)}
+.fb.good{border-color:var(--good);background:var(--good-bg)}
+.fb.bad{border-color:var(--red);background:var(--bad-bg)}
+.fb p{margin:5px 0}
+.verdict{font-family:Kalam,cursive;font-size:1.35rem;font-weight:700}
+.fb.good .verdict{color:var(--good)} .fb.bad .verdict{color:var(--red)}
+.scroll{overflow-x:auto;margin:10px 0;max-width:100%}
+table{border-collapse:collapse;background:var(--card)}
+th,td{border:1px solid var(--line);padding:5px 11px;text-align:center}
+th{font-family:"STIX Two Text","Cambria Math",serif;font-weight:600;white-space:nowrap}
+td.m{white-space:nowrap}
+td.v,.cell.v{color:var(--pen);font-weight:700} td.f,.cell.f{color:var(--red);font-weight:700}
+td.res,th.last{background:var(--hl);color:var(--hl-ink)} td.res.v{color:var(--pen)}
+.cell{min-width:52px;padding:4px 10px;border:1.5px dashed var(--pen);border-radius:4px;background:var(--paper);font-weight:700}
+.steps{counter-reset:s;list-style:none;padding-left:0;margin:8px 0}
+.steps li{counter-increment:s;position:relative;padding-left:32px;margin:7px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;border:2px solid var(--pen);color:var(--pen);font:700 12px/18px "Atkinson Hyperlegible",sans-serif;text-align:center}
+.deriv{margin:10px 0;display:grid;gap:4px}
+.dl{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;padding:4px 0;border-bottom:1px dotted var(--line)}
+.dl .m{font-size:1.12rem;white-space:normal}
+.dl .law{color:var(--muted);font-size:.9rem}
+.svenn{max-width:320px;display:block;margin:10px 0}
+svg .u{fill:none;stroke:var(--line);stroke-width:1.5} svg .st{fill:none;stroke:var(--pen);stroke-width:2}
+svg .lbl{fill:var(--pen);font:700 15px Kalam,cursive} svg .num{fill:var(--ink);font:700 14px "Atkinson Hyperlegible",sans-serif;text-anchor:middle}
+svg .num.hot{fill:var(--red)}
+footer{max-width:1000px;margin:0 auto;padding:0 20px 36px;color:var(--muted);font-size:.9rem}
+</style>
+  </head>
+  <body>
+
+    <div id="home" class="home">
+      <h1>Conjuntos e Lógica</h1>
+      <p class="lead">Material de estudo das aulas 01 e 02. Leia a explicação
+        primeiro e depois treine com exercícios que mudam a cada clique.</p>
+      <div class="cards">
+        <a class="icard"
+          href="https://claude.ai/artifact/5TE35r6N8Bq7ux1RnhYvXn"
+          target="_blank" rel="noopener">
+          <div class="ico" aria-hidden="true">📖</div>
+          <h2>Explicação</h2>
+          <div class="lines"><p>Resumo completo com exemplos resolvidos, tabelas
+              e o passo a passo de simplificação.</p>
+            <p>Abre em uma nova aba.</p>
+            <span class="go"><span>Abrir a explicação</span></span></div>
+        </a>
+        <button class="icard" id="go-ex" type="button">
+          <div class="ico" aria-hidden="true">🎲</div>
+          <h2>Exercícios aleatórios</h2>
+          <div class="lines"><p>Escolha um tema (ou misture tudo). Cada
+              exercício tem correção e resolução comentada.</p>
+            <p>Seu placar fica salvo neste navegador.</p>
+            <span class="go"><span>Começar a treinar</span></span></div>
+        </button>
+      </div>
+      <p class="topics-preview"><b>Conjuntos:</b> pertinência e inclusão,
+        operações, conjunto das partes, contagem com 2 e 3
+        conjuntos.<br><b>Lógica:</b> valor lógico, tabela-verdade,
+        tautologia/contradição/contingência, leis de equivalência,
+        simplificação, negação e contrapositiva de frases.</p>
+    </div>
+
+    <div id="trainer" class="trainer" hidden>
+      <div class="tbar">
+        <h1>Exercícios aleatórios</h1>
+        <button id="back" class="ghost" type="button">Voltar ao início</button>
+      </div>
+      <div class="tlay">
+        <aside aria-label="Temas">
+          <div id="topics"></div>
+          <div class="side-foot"><p id="session" style="margin:0"></p><p
+              style="margin:4px 0 0">O número ao lado de cada tema mostra
+              acertos/tentativas.</p><button id="reset" class="ghost"
+              type="button">Zerar placar</button></div>
+        </aside>
+        <section id="card" aria-live="polite"></section>
+      </div>
+    </div>
+
+    <footer>Baseado nas aulas “Teoria dos Conjuntos” (Aula 01) e “Lógica
+      Proposicional” (Aula 02).</footer>
+    <script>
+// ===== Lógica: parser, avaliação, formatação =====
+function tokenize(s){const t=[];for(const ch of s){if(ch===' ')continue;t.push(ch);}return t;}
+function parse(s){
+  const tk=tokenize(s);let i=0;
+  const peek=()=>tk[i], eat=(c)=>{if(tk[i]!==c)throw new Error('esperado '+c+' em '+s+' pos '+i+' achou '+tk[i]);i++;};
+  function bic(){let a=imp();while(peek()==='↔'){i++;a={t:'iff',a,b:imp()};}return a;}
+  function imp(){const a=oa();if(peek()==='→'){i++;return {t:'imp',a,b:imp()};}return a;}
+  function oa(){let a=un();while(peek()==='∧'||peek()==='∨'){const o=tk[i++];a={t:o==='∧'?'and':'or',a,b:un()};}return a;}
+  function un(){if(peek()==='¬'){i++;return {t:'not',a:un()};}return atom();}
+  function atom(){const c=tk[i++];
+    if(c==='p'||c==='q'||c==='r')return {t:'var',n:c};
+    if(c==='V')return {t:'const',v:true};if(c==='F')return {t:'const',v:false};
+    if(c==='('){const e=bic();eat(')');return e;} if(c==='['){const e=bic();eat(']');return e;}
+    throw new Error('token inesperado '+c+' em '+s);}
+  const e=bic(); if(i!==tk.length)throw new Error('sobrou em '+s); return e;
+}
+function ev(n,env){switch(n.t){case'var':return env[n.n];case'const':return n.v;case'not':return !ev(n.a,env);
+  case'and':return ev(n.a,env)&&ev(n.b,env);case'or':return ev(n.a,env)||ev(n.b,env);
+  case'imp':return !ev(n.a,env)||ev(n.b,env);case'iff':return ev(n.a,env)===ev(n.b,env);}}
+const SYM={and:'∧',or:'∨',imp:'→',iff:'↔'};
+const isBin=n=>n&&(n.t==='and'||n.t==='or'||n.t==='imp'||n.t==='iff');
+function fmt(n){
+  if(n.t==='var')return n.n; if(n.t==='const')return n.v?'V':'F';
+  if(n.t==='not'){const s=fmt(n.a);return '¬'+(isBin(n.a)?'('+s+')':s);}
+  const wrap=(c)=>{const s=fmt(c);if(!isBin(c))return s;if(c.t===n.t&&(n.t==='and'||n.t==='or'))return s;return '('+s+')';};
+  return wrap(n.a)+' '+SYM[n.t]+' '+wrap(n.b);
+}
+function varsOf(n,set=new Set()){if(n.t==='var')set.add(n.n);if(n.a)varsOf(n.a,set);if(n.b)varsOf(n.b,set);return set;}
+function envs(vs){const rows=[];const k=vs.length;for(let m=0;m<(1<<k);m++){const e={};vs.forEach((v,j)=>{e[v]=!((m>>(k-1-j))&1);});rows.push(e);}return rows;}
+function sortedVars(){const s=new Set();for(const n of arguments)varsOf(n,s);return ['p','q','r'].filter(v=>s.has(v));}
+function equiv(a,b){const vs=sortedVars(a,b);const R=vs.length?envs(vs):[{}];return R.every(e=>ev(a,e)===ev(b,e));}
+function subformulas(n,out=[],seen=new Set()){if(n.t==='var'||n.t==='const')return out;
+  if(n.a)subformulas(n.a,out,seen);if(n.b)subformulas(n.b,out,seen);const k=fmt(n);if(!seen.has(k)){seen.add(k);out.push(n);}return out;}
+function classify(n){const vs=sortedVars(n);const R=vs.length?envs(vs):[{}];const vals=R.map(e=>ev(n,e));
+  if(vals.every(x=>x))return'Tautologia';if(vals.every(x=>!x))return'Contradição';return'Contingência';}
+
+// ===== utilidades =====
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function sample(arr,k){return shuffle(arr).slice(0,k);}
+
+// ===== geradores de expressão aleatória =====
+function genExpr(depth,vars){
+  if(depth===0||Math.random()<0.25){const v={t:'var',n:pick(vars)};return Math.random()<0.3?{t:'not',a:v}:v;}
+  const op=pick(['and','and','or','or','imp','imp','iff']);
+  let e={t:op,a:genExpr(depth-1,vars),b:genExpr(depth-1,vars)};
+  if(Math.random()<0.15)e={t:'not',a:e};return e;
+}
+function trivial(n){if(!n||n.t==='var'||n.t==='const')return false;
+  if(n.t==='not')return n.a.t==='not'||trivial(n.a);
+  const parts=(n.t==='and'||n.t==='or')?flat(n,n.t).map(fmt):[fmt(n.a),fmt(n.b)];
+  for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++){const A=parts[i],B=parts[j];if(A===B||A==='¬'+B||B==='¬'+A||A==='¬('+B+')'||B==='¬('+A+')')return true;}
+  return trivial(n.a)||trivial(n.b);}
+function flat(n,op){return n.t===op?[...flat(n.a,op),...flat(n.b,op)]:[n];}
+function countOps(n){if(n.t==='var'||n.t==='const')return 0;return 1+(n.a?countOps(n.a):0)+(n.b?countOps(n.b):0);}
+function genGood(depth,vars,minOps,maxCols){
+  for(let k=0;k<200;k++){const e=genExpr(depth,vars);const vs=sortedVars(e);
+    if(vs.length!==vars.length||trivial(e))continue;{const f=fmt(e);if(vars.some(v=>f.split(v).length-1>2))continue;}const ops=countOps(e);if(ops<minOps)continue;
+    if(subformulas(e).length>maxCols)continue;if(fmt(e).length>34)continue;return e;}
+  return parse(vars.length===3?'(p ∧ q) → ¬r':'(p → q) ∧ ¬p');
+}
+
+// ===== bancos =====
+const CLASS_POOL=["p ∨ ¬p","p ∧ ¬p","p → p","(p → q) ∨ (q → p)","p → (q → p)","p ↔ ¬p","p ∨ q","(p ∧ q) ∨ (¬p ∧ q)","(p ∧ q) → p","p → (p ∨ q)","¬(p ∨ ¬p)","(p → q) ∧ (p ∧ ¬q)","[(p → q) ∧ p] → q","[(p → q) ∧ ¬q] → ¬p","(p → q) → (q → p)","(p ∨ q) → p","¬(p ∧ q) ↔ (¬p ∨ ¬q)","(p ↔ q) ∧ (p ↔ ¬q)","p ∧ (q ∨ ¬q)","(p ∨ q) ∧ ¬p ∧ ¬q","[(p ∨ q) ∧ ¬p] → q","(p → q) ∨ r","p → ¬p","(p ∧ q) ↔ (q ∧ p)","¬p → (p → q)"];
+
+const EQ_POOL=[
+ {q:"¬(p ∧ q)",c:"¬p ∨ ¬q",law:"De Morgan: a negação do “e” vira “ou” das negações.",w:["¬p ∧ ¬q","p ∨ q","¬p ∧ q"]},
+ {q:"¬(p ∨ q)",c:"¬p ∧ ¬q",law:"De Morgan: a negação do “ou” vira “e” das negações.",w:["¬p ∨ ¬q","¬p ∨ q","p ∧ q"]},
+ {q:"p → q",c:"¬p ∨ q",law:"Condicional: p → q ≡ ¬p ∨ q.",w:["p ∨ ¬q","q → p","¬p → ¬q"]},
+ {q:"p → q",c:"¬q → ¬p",law:"Contrapositiva: inverte a ordem e nega os dois lados.",w:["q → p","¬p → ¬q","p ∧ ¬q"]},
+ {q:"¬(p → q)",c:"p ∧ ¬q",law:"Negação do condicional: ¬(p → q) ≡ p ∧ ¬q (o antecedente acontece e o consequente não).",w:["¬p → ¬q","¬p ∧ q","¬p ∨ ¬q"]},
+ {q:"p ↔ q",c:"(p → q) ∧ (q → p)",law:"Bicondicional: é o condicional de ida E o de volta.",w:["(p → q) ∨ (q → p)","p → q","(p ∧ q) ∨ ¬p"]},
+ {q:"p ∧ (q ∨ r)",c:"(p ∧ q) ∨ (p ∧ r)",law:"Distributiva do ∧ sobre o ∨.",w:["(p ∧ q) ∨ r","(p ∨ q) ∧ (p ∨ r)","p ∧ q ∧ r"]},
+ {q:"p ∨ (q ∧ r)",c:"(p ∨ q) ∧ (p ∨ r)",law:"Distributiva do ∨ sobre o ∧.",w:["(p ∨ q) ∧ r","(p ∧ q) ∨ (p ∧ r)","p ∨ q ∨ r"]},
+ {q:"p ∧ (p ∨ q)",c:"p",law:"Absorção: p ∧ (p ∨ q) ≡ p.",w:["p ∨ q","q","p ∧ q"]},
+ {q:"p ∨ (p ∧ q)",c:"p",law:"Absorção: p ∨ (p ∧ q) ≡ p.",w:["p ∧ q","q","p ∨ q"]},
+ {q:"¬¬p",c:"p",law:"Dupla negação.",w:["¬p","V","F"]},
+ {q:"p ∨ ¬p",c:"V",law:"Terceiro excluído: p ∨ ¬p é sempre verdadeiro.",w:["p","F","¬p"]},
+ {q:"p ∧ ¬p",c:"F",law:"Contradição: p ∧ ¬p é sempre falso.",w:["p","V","¬p"]},
+ {q:"p ∧ V",c:"p",law:"Identidade: “e verdadeiro” não muda nada.",w:["V","F","¬p"]},
+ {q:"p ∨ F",c:"p",law:"Identidade: “ou falso” não muda nada.",w:["V","F","¬p"]},
+ {q:"p ∨ V",c:"V",law:"Dominação: “ou verdadeiro” é sempre V.",w:["p","F","¬p"]},
+ {q:"p ∧ F",c:"F",law:"Dominação: “e falso” é sempre F.",w:["p","V","¬p"]},
+ {q:"¬(p ↔ q)",c:"p ↔ ¬q",law:"Negação do bicondicional: basta negar um dos lados.",w:["¬p ↔ ¬q","¬p ∧ ¬q","p ∨ q"]},
+ {q:"p ∧ q",c:"q ∧ p",law:"Comutativa: a ordem não importa no ∧ e no ∨.",w:["p ∨ q","p → q","¬p ∧ ¬q"]}
+];
+
+const SIMP_POOL=[
+ {q:"(p ∧ q) ∨ (p ∧ ¬q)",a:"p",w:["q","p ∧ q","V"],s:[["p ∧ (q ∨ ¬q)","Distributiva (p em evidência)"],["p ∧ V","Terceiro excluído"],["p","Identidade"]]},
+ {q:"p ∨ (p ∧ q)",a:"p",w:["p ∧ q","q","p ∨ q"],s:[["p","Absorção"]]},
+ {q:"¬(p ∨ ¬q)",a:"¬p ∧ q",w:["¬p ∨ q","p ∧ ¬q","¬p ∧ ¬q"],s:[["¬p ∧ ¬¬q","De Morgan"],["¬p ∧ q","Dupla negação"]]},
+ {q:"(p ∧ q ∧ r) ∨ (p ∧ q ∧ ¬r)",a:"p ∧ q",w:["p ∧ q ∧ r","r","p ∨ q"],s:[["(p ∧ q) ∧ (r ∨ ¬r)","Distributiva ((p ∧ q) em evidência)"],["(p ∧ q) ∧ V","Terceiro excluído"],["p ∧ q","Identidade"]]},
+ {q:"p ∧ (¬p ∨ q)",a:"p ∧ q",w:["q","p","¬p ∧ q"],s:[["(p ∧ ¬p) ∨ (p ∧ q)","Distributiva"],["F ∨ (p ∧ q)","Contradição"],["p ∧ q","Identidade"]]},
+ {q:"¬(¬p ∧ q) ∨ p",a:"p ∨ ¬q",w:["p","¬p ∨ q","p ∧ ¬q"],s:[["(¬¬p ∨ ¬q) ∨ p","De Morgan"],["(p ∨ ¬q) ∨ p","Dupla negação"],["p ∨ p ∨ ¬q","Comutativa"],["p ∨ ¬q","Idempotência"]]},
+ {q:"(p → q) ∧ p",a:"p ∧ q",w:["q","p","p → q"],s:[["(¬p ∨ q) ∧ p","Condicional"],["(¬p ∧ p) ∨ (q ∧ p)","Distributiva"],["F ∨ (q ∧ p)","Contradição"],["p ∧ q","Identidade e comutativa"]]},
+ {q:"r ∨ ¬(r ∨ p)",a:"r ∨ ¬p",w:["r","¬p","r ∧ ¬p"],s:[["r ∨ (¬r ∧ ¬p)","De Morgan"],["(r ∨ ¬r) ∧ (r ∨ ¬p)","Distributiva"],["V ∧ (r ∨ ¬p)","Terceiro excluído"],["r ∨ ¬p","Identidade"]]},
+ {q:"[(p ∧ q) ∨ r] ∧ [(p ∧ q) ∨ ¬r]",a:"p ∧ q",w:["r","p ∨ q","V"],s:[["(p ∧ q) ∨ (r ∧ ¬r)","Distributiva ao contrário ((p ∧ q) em evidência)"],["(p ∧ q) ∨ F","Contradição"],["p ∧ q","Identidade"]]},
+ {q:"¬[p → (q ∧ r)]",a:"p ∧ (¬q ∨ ¬r)",w:["¬p → (¬q ∧ ¬r)","p ∧ ¬q ∧ ¬r","¬p ∨ (q ∧ r)"],s:[["p ∧ ¬(q ∧ r)","Negação do condicional"],["p ∧ (¬q ∨ ¬r)","De Morgan"]]},
+ {q:"(p ∨ q) ∧ ¬(¬p ∧ q)",a:"p",w:["q","p ∨ q","p ∧ ¬q"],s:[["(p ∨ q) ∧ (¬¬p ∨ ¬q)","De Morgan"],["(p ∨ q) ∧ (p ∨ ¬q)","Dupla negação"],["p ∨ (q ∧ ¬q)","Distributiva ao contrário (p em evidência)"],["p ∨ F","Contradição"],["p","Identidade"]]},
+ {q:"¬(p ∨ q) ∨ (¬p ∧ q)",a:"¬p",w:["¬q","¬p ∧ q","F"],s:[["(¬p ∧ ¬q) ∨ (¬p ∧ q)","De Morgan"],["¬p ∧ (¬q ∨ q)","Distributiva (¬p em evidência)"],["¬p ∧ V","Terceiro excluído"],["¬p","Identidade"]]},
+ {q:"¬(p → q) ∨ (p ∧ q)",a:"p",w:["q","p ∧ q","¬q"],s:[["(p ∧ ¬q) ∨ (p ∧ q)","Negação do condicional"],["p ∧ (¬q ∨ q)","Distributiva (p em evidência)"],["p ∧ V","Terceiro excluído"],["p","Identidade"]]},
+ {q:"(p ∧ q) ∨ (p ∧ ¬q ∧ r) ∨ (p ∧ ¬r)",a:"p",w:["p ∧ q","p ∧ r","V"],s:[["p ∧ [q ∨ (¬q ∧ r) ∨ ¬r]","Distributiva (p em evidência)"],["p ∧ [((q ∨ ¬q) ∧ (q ∨ r)) ∨ ¬r]","Distributiva em q ∨ (¬q ∧ r)"],["p ∧ [(V ∧ (q ∨ r)) ∨ ¬r]","Terceiro excluído"],["p ∧ [q ∨ r ∨ ¬r]","Identidade"],["p ∧ [q ∨ V]","Terceiro excluído"],["p ∧ V","Dominação"],["p","Identidade"]]},
+ {q:"[(p → q) ∧ ¬q] → ¬p",a:"V",w:["F","¬p","q"],s:[["¬[(¬p ∨ q) ∧ ¬q] ∨ ¬p","Condicional (nas duas setas)"],["¬(¬p ∨ q) ∨ ¬¬q ∨ ¬p","De Morgan"],["(p ∧ ¬q) ∨ q ∨ ¬p","De Morgan e dupla negação"],["[(p ∨ q) ∧ (¬q ∨ q)] ∨ ¬p","Distributiva em (p ∧ ¬q) ∨ q"],["[(p ∨ q) ∧ V] ∨ ¬p","Terceiro excluído"],["p ∨ q ∨ ¬p","Identidade"],["(p ∨ ¬p) ∨ q","Comutativa"],["V ∨ q","Terceiro excluído"],["V","Dominação (é tautologia: Modus Tollens)"]]},
+ {q:"[(p → q) ∧ (q → p)] ∨ (p ∧ ¬q)",a:"p ∨ ¬q",w:["p ↔ q","V","p ∧ ¬q"],s:[["[(¬p ∨ q) ∧ (¬q ∨ p)] ∨ (p ∧ ¬q)","Condicional (nas duas setas)"],["[(¬p ∨ q) ∨ (p ∧ ¬q)] ∧ [(¬q ∨ p) ∨ (p ∧ ¬q)]","Distributiva do ∨ sobre o ∧"],["[(¬p ∨ q) ∨ ¬(¬p ∨ q)] ∧ [(¬q ∨ p) ∨ (p ∧ ¬q)]","De Morgan ao contrário: p ∧ ¬q = ¬(¬p ∨ q)"],["V ∧ [(¬q ∨ p) ∨ (p ∧ ¬q)]","Terceiro excluído"],["¬q ∨ [p ∨ (p ∧ ¬q)]","Identidade e associativa"],["¬q ∨ p","Absorção"],["p ∨ ¬q","Comutativa (é o mesmo que q → p)"]]}
+];
+
+const FRASES=[["chove","não chove"],["eu estudo","eu não estudo"],["o sinal está vermelho","o sinal não está vermelho"],["João é médico","João não é médico"],["a loja abre","a loja não abre"],["eu passo na prova","eu não passo na prova"],["o app compila","o app não compila"],["faz frio","não faz frio"],["vou à praia","não vou à praia"],["o número é par","o número não é par"],["a bateria acabou","a bateria não acabou"],["Ana viaja","Ana não viaja"]];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+// cada tipo: enunciado, fórmula base e opções (texto, fórmula) — a correta é marcada pela equivalência
+const NEG_TYPES=[
+ {ask:"Qual é a <b>negação</b> de:",base:(P,Q)=>`Se ${P[0]}, então ${Q[0]}.`,target:"¬(p → q)",
+  opts:(P,Q)=>[[`${cap(P[0])} e ${Q[1]}.`,"p ∧ ¬q"],[`Se ${P[1]}, então ${Q[1]}.`,"¬p → ¬q"],[`${cap(P[1])} e ${Q[1]}.`,"¬p ∧ ¬q"],[`Se ${P[0]}, então ${Q[1]}.`,"p → ¬q"]],
+  why:"A negação do “se… então” é “o antecedente acontece <b>e</b> o consequente não”: ¬(p → q) ≡ p ∧ ¬q. Não se nega com outro “se… então”."},
+ {ask:"Qual é a <b>contrapositiva</b> (equivalente) de:",base:(P,Q)=>`Se ${P[0]}, então ${Q[0]}.`,target:"p → q",
+  opts:(P,Q)=>[[`Se ${Q[1]}, então ${P[1]}.`,"¬q → ¬p"],[`Se ${Q[0]}, então ${P[0]}.`,"q → p"],[`Se ${P[1]}, então ${Q[1]}.`,"¬p → ¬q"],[`${cap(P[0])} e ${Q[1]}.`,"p ∧ ¬q"]],
+  why:"Contrapositiva: troca a ordem e nega os dois lados: p → q ≡ ¬q → ¬p. A recíproca (q → p) <b>não</b> é equivalente."},
+ {ask:"Qual frase é <b>equivalente</b> a:",base:(P,Q)=>`Se ${P[0]}, então ${Q[0]}.`,target:"p → q",
+  opts:(P,Q)=>[[`${cap(P[1])} ou ${Q[0]}.`,"¬p ∨ q"],[`${cap(P[0])} ou ${Q[1]}.`,"p ∨ ¬q"],[`${cap(P[1])} e ${Q[0]}.`,"¬p ∧ q"],[`${cap(P[0])} ou ${Q[0]}.`,"p ∨ q"]],
+  why:"Lei do condicional: p → q ≡ ¬p ∨ q (“ou não acontece p, ou acontece q”)."},
+ {ask:"Qual é a <b>negação</b> de:",base:(P,Q)=>`${cap(P[0])} e ${Q[0]}.`,target:"¬(p ∧ q)",
+  opts:(P,Q)=>[[`${cap(P[1])} ou ${Q[1]}.`,"¬p ∨ ¬q"],[`${cap(P[1])} e ${Q[1]}.`,"¬p ∧ ¬q"],[`${cap(P[0])} ou ${Q[0]}.`,"p ∨ q"],[`${cap(P[1])} e ${Q[0]}.`,"¬p ∧ q"]],
+  why:"De Morgan: ¬(p ∧ q) ≡ ¬p ∨ ¬q. Nega cada parte e troca “e” por “ou”."},
+ {ask:"Qual é a <b>negação</b> de:",base:(P,Q)=>`${cap(P[0])} ou ${Q[0]}.`,target:"¬(p ∨ q)",
+  opts:(P,Q)=>[[`${cap(P[1])} e ${Q[1]}.`,"¬p ∧ ¬q"],[`${cap(P[1])} ou ${Q[1]}.`,"¬p ∨ ¬q"],[`${cap(P[0])} e ${Q[0]}.`,"p ∧ q"],[`${cap(P[1])} ou ${Q[0]}.`,"¬p ∨ q"]],
+  why:"De Morgan: ¬(p ∨ q) ≡ ¬p ∧ ¬q. Nega cada parte e troca “ou” por “e”."}
+];
+
+// ===== Renderização de fórmulas e tabelas =====
+const M=s=>`<span class="m">${s}</span>`;
+const VF=b=>b?'V':'F';
+function truthTable(e,opts={}){
+  const vs=sortedVars(e);const rows=envs(vs);const subs=subformulas(e);
+  let h='<div class="scroll"><table class="tv"><tr>'+vs.map(v=>`<th>${v}</th>`).join('')+subs.map((s,i)=>`<th${i===subs.length-1?' class="last"':''}>${fmt(s)}</th>`).join('')+'</tr>';
+  rows.forEach(r=>{h+='<tr>'+vs.map(v=>`<td class="${r[v]?'v':'f'}">${VF(r[v])}</td>`).join('')+subs.map((s,i)=>{const x=ev(s,r);return `<td class="${x?'v':'f'}${i===subs.length-1?' res':''}">${VF(x)}</td>`;}).join('')+'</tr>';});
+  return h+'</table></div>';
+}
+function setStr(a){return a.length?'{'+a.join(', ')+'}':'∅';}
+function venn2(l1,l2,a,x,b,none){
+  return `<svg viewBox="0 0 280 150" class="svenn" role="img" aria-label="Diagrama com os valores">
+  <rect class="u" x="4" y="4" width="272" height="142" rx="6"/>
+  <circle class="st" cx="110" cy="75" r="58"/><circle class="st" cx="170" cy="75" r="58"/>
+  <text class="lbl" x="30" y="28">${l1}</text><text class="lbl" x="250" y="28" text-anchor="end">${l2}</text>
+  <text class="num" x="82" y="80">${a}</text><text class="num hot" x="140" y="80">${x}</text><text class="num" x="198" y="80">${b}</text>
+  <text class="num" x="250" y="136">${none}</text></svg>`;
+}
+function venn3(L,r){
+  return `<svg viewBox="0 0 300 250" class="svenn" role="img" aria-label="Diagrama de três conjuntos com os valores">
+  <rect class="u" x="4" y="4" width="292" height="242" rx="6"/>
+  <circle class="st" cx="115" cy="95" r="70"/><circle class="st" cx="185" cy="95" r="70"/><circle class="st" cx="150" cy="155" r="70"/>
+  <text class="lbl" x="22" y="30">${L[0]}</text><text class="lbl" x="280" y="30" text-anchor="end">${L[1]}</text><text class="lbl" x="232" y="236">${L[2]}</text>
+  <text class="num" x="85" y="80">${r.a}</text><text class="num" x="215" y="80">${r.b}</text><text class="num" x="150" y="200">${r.c}</text>
+  <text class="num" x="150" y="70">${r.ab}</text><text class="num" x="112" y="148">${r.ac}</text><text class="num" x="188" y="148">${r.bc}</text>
+  <text class="num hot" x="150" y="122">${r.abc}</text><text class="num" x="268" y="236">${r.none}</text></svg>`;
+}
+
+// ===== Geradores: Conjuntos =====
+function genPert(){
+  const A=sample([1,2,3,4,5,6,7,8,9],4).sort((a,b)=>a-b);const has=x=>A.includes(x);
+  const inn=pick(A);const out=pick([1,2,3,4,5,6,7,8,9].filter(x=>!has(x)));
+  const Astr=`A = ${setStr(A)}`;const T=rnd(1,9);let st,val,why;
+  if(T===1){const x=Math.random()<.5?inn:out;st=`${x} ∈ A`;val=has(x);why=val?`${x} aparece na lista de A, então pertence.`:`${x} não aparece em A, então não pertence.`;}
+  else if(T===2){const x=Math.random()<.5?inn:out;st=`${x} ∉ A`;val=!has(x);why=val?`${x} realmente não está em A.`:`${x} está em A, então dizer que não pertence é falso.`;}
+  else if(T===3){const x=Math.random()<.5?inn:out;st=`{${x}} ⊂ A`;val=has(x);why=`{${x}} é um conjunto, e ⊂ compara conjunto com conjunto. É V quando todo elemento de {${x}} está em A. `+(val?`${x} está em A.`:`${x} não está em A.`);}
+  else if(T===4){const both=Math.random()<.5;const x=inn;const y=both?pick(A.filter(z=>z!==x)):out;const pr=[x,y].sort((a,b)=>a-b);st=`{${pr[0]}, ${pr[1]}} ⊂ A`;val=both;why=both?`Os dois elementos (${pr[0]} e ${pr[1]}) estão em A.`:`${out} não está em A. Basta um elemento de fora para não ser subconjunto.`;}
+  else if(T===5){st='∅ ⊂ A';val=true;why='O conjunto vazio é subconjunto de qualquer conjunto.';}
+  else if(T===6){st='A ⊂ A';val=true;why='Todo conjunto é subconjunto dele mesmo.';}
+  else if(T===7){st=`${inn} ⊂ A`;val=false;why=`${inn} é um <b>elemento</b>, não um conjunto. ⊂ só liga conjunto com conjunto. O certo seria ${inn} ∈ A ou {${inn}} ⊂ A.`;}
+  else if(T===8){st=`{${inn}} ∈ A`;val=false;why=`Os elementos de A são números, não conjuntos. {${inn}} não é elemento de A. O certo seria {${inn}} ⊂ A.`;}
+  else {const k=Math.random()<.5?16:pick([4,8,12]);st=`n(P(A)) = ${k}`;val=k===16;why=`A tem 4 elementos, então n(P(A)) = 2⁴ = 16.`;}
+  return {kind:'vf',q:`<p>Dado ${M(Astr)}, a afirmação abaixo é verdadeira ou falsa?</p><p class="big">${st}</p>`,answer:val,answerText:VF(val),sol:`<p>${why}</p>`};
+}
+function genOper(){
+  const U=[0,1,2,3,4,5,6,7,8,9];const A=sample(U,rnd(3,6)).sort((a,b)=>a-b);let B=sample(U,rnd(3,6)).sort((a,b)=>a-b);
+  const inA=x=>A.includes(x),inB=x=>B.includes(x);
+  const ops=[
+    {s:'A ∪ B',f:x=>inA(x)||inB(x),w:'União: junte todos os elementos de A e de B, sem repetir.'},
+    {s:'A ∩ B',f:x=>inA(x)&&inB(x),w:'Interseção: só os elementos que estão nos <b>dois</b> conjuntos.'},
+    {s:'A − B',f:x=>inA(x)&&!inB(x),w:'Diferença: pegue A e tire tudo que também está em B.'},
+    {s:'B − A',f:x=>inB(x)&&!inA(x),w:'Diferença: pegue B e tire tudo que também está em A.'},
+    {s:'Ā',f:x=>!inA(x),w:'Complementar: tudo que está em U e <b>não</b> está em A.'},
+    {s:'B̄',f:x=>!inB(x),w:'Complementar: tudo que está em U e <b>não</b> está em B.'},
+    {s:'(A ∪ B)ᶜ',f:x=>!(inA(x)||inB(x)),w:'Primeiro faça A ∪ B, depois pegue o que sobra de U. Por De Morgan, é o mesmo que Ā ∩ B̄.'},
+    {s:'Ā ∩ B',f:x=>!inA(x)&&inB(x),w:'Primeiro Ā (o que não está em A), depois a interseção com B. Repare que dá o mesmo que B − A.'}
+  ];
+  const op=pick(ops);const res=U.filter(op.f);
+  let extra='';if(op.s==='(A ∪ B)ᶜ')extra=`<p>A ∪ B = ${M(setStr(U.filter(x=>inA(x)||inB(x))))}</p>`;
+  if(op.s==='Ā ∩ B')extra=`<p>Ā = ${M(setStr(U.filter(x=>!inA(x))))}</p>`;
+  return {kind:'set',q:`<p>${M('U = {0, 1, 2, …, 9}')}, &nbsp;${M('A = '+setStr(A))}, &nbsp;${M('B = '+setStr(B))}</p><p>Calcule:</p><p class="big">${op.s}</p>`,
+    answer:res,answerText:M(setStr(res)),sol:`<p>${op.w}</p>${extra}<p>Resultado: ${M(op.s+' = '+setStr(res))}</p>`};
+}
+function genPartes(){
+  if(Math.random()<.6){const n=rnd(1,6);const A=['a','b','c','d','e','f'].slice(0,n);const ans=2**n;
+    return {kind:'number',q:`<p>${M('A = '+setStr(A))}. Quantos elementos tem ${M('P(A)')} (o conjunto das partes de A)?</p>`,answer:ans,answerText:String(ans),
+      sol:`<p>A tem ${n} elemento${n>1?'s':''}, então ${M(`n(P(A)) = 2${sup(n)} = ${ans}`)}.</p><p>Lembre: cada elemento tem 2 opções (entra ou não entra no subconjunto).</p>`};}
+  const k=rnd(1,7);const v=2**k;
+  return {kind:'number',q:`<p>Se ${M(`n(P(A)) = ${v}`)}, quantos elementos tem o conjunto A?</p>`,answer:k,answerText:String(k),
+    sol:`<p>Procure o expoente: ${M(`2${sup(k)} = ${v}`)}, então A tem ${k} elementos.</p>`};
+}
+function sup(n){return String(n).split('').map(d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]).join('');}
+const CT2=[{g:'alunos',v:'estudam',a:'matemática',b:'física',both:'as duas matérias'},{g:'pessoas',v:'assistem a',a:'futebol',b:'vôlei',both:'os dois esportes'},
+ {g:'clientes',v:'compram',a:'café',b:'pão de queijo',both:'os dois produtos'},{g:'leitores',v:'leem',a:'o jornal A',b:'o jornal B',both:'os dois jornais'},
+ {g:'funcionários',v:'usam',a:'notebook',b:'tablet',both:'os dois aparelhos'}];
+function genCont2(){
+  const c=pick(CT2);const x=rnd(5,60),a=rnd(10,120),b=rnd(10,120),none=rnd(0,80);const T=a+b+x+none,nA=a+x,nB=b+x;
+  const vd=venn2(cap(c.a.replace(/^o jornal /,'')),cap(c.b.replace(/^o jornal /,'')),a,x,b,none);
+  if(Math.random()<.3){
+    return {kind:'number',q:`<p>Numa pesquisa com ${T} ${c.g}, ${nA} ${c.v} ${c.a}, ${nB} ${c.v} ${c.b} e ${none} não ${c.v} nenhum dos dois.</p><p><b>Quantos ${c.v} ${c.both}?</b></p>`,
+      answer:x,answerText:String(x),sol:`<ol class="steps"><li>Quem ${c.v} pelo menos um: ${T} − ${none} = ${T-none}</li><li>Fórmula: ${M(`n(A ∪ B) = n(A) + n(B) − n(A ∩ B)`)}</li><li>${T-none} = ${nA} + ${nB} − x &nbsp;→&nbsp; x = ${nA+nB} − ${T-none} = <b>${x}</b></li></ol>${vd}`};}
+  const Qs=[[`Quantos ${c.v} <b>somente</b> ${c.a}?`,a],[`Quantos ${c.v} <b>somente</b> ${c.b}?`,b],[`Quantos ${c.v} ${c.a} <b>ou</b> ${c.b} (pelo menos um)?`,a+b+x],[`Quantos ${c.v} <b>só um</b> dos dois?`,a+b],[`Quantos <b>não</b> ${c.v} nenhum dos dois?`,none]];
+  const [qq,ans]=pick(Qs);
+  return {kind:'number',q:`<p>Numa pesquisa com ${T} ${c.g}, ${nA} ${c.v} ${c.a}, ${nB} ${c.v} ${c.b} e ${x} ${c.v} ${c.both}.</p><p class="ask">${qq}</p>`,answer:ans,answerText:String(ans),
+    sol:`<p>Preencha de dentro para fora:</p><ol class="steps"><li>Meio (os dois): <b>${x}</b></li><li>Só ${c.a}: ${nA} − ${x} = <b>${a}</b></li><li>Só ${c.b}: ${nB} − ${x} = <b>${b}</b></li><li>Pelo menos um: ${a} + ${x} + ${b} = <b>${a+b+x}</b> &nbsp;(ou ${nA} + ${nB} − ${x})</li><li>Nenhum: ${T} − ${a+b+x} = <b>${none}</b></li></ol>${vd}<p>Resposta: <b>${ans}</b></p>`};
+}
+const CT3=[{g:'leitores',v:'leem',n:['o jornal A','o jornal B','o jornal C'],s:['A','B','C']},{g:'alunos',v:'estudam',n:['inglês','espanhol','francês'],s:['Ing','Esp','Fra']},
+ {g:'pessoas',v:'assistem a',n:['séries','filmes','novelas'],s:['Sér','Fil','Nov']},{g:'clientes',v:'usam',n:['o app X','o app Y','o app Z'],s:['X','Y','Z']}];
+function genCont3(){
+  const c=pick(CT3);const r={abc:rnd(2,20),ab:rnd(3,30),bc:rnd(3,30),ac:rnd(3,30),a:rnd(10,90),b:rnd(10,90),c:rnd(10,90),none:rnd(0,60)};
+  const T=r.abc+r.ab+r.bc+r.ac+r.a+r.b+r.c+r.none;const nA=r.a+r.ab+r.ac+r.abc,nB=r.b+r.ab+r.bc+r.abc,nC=r.c+r.ac+r.bc+r.abc;
+  const nAB=r.ab+r.abc,nBC=r.bc+r.abc,nAC=r.ac+r.abc;const [A,B,C]=c.n;const un=T-r.none;
+  const base=`<p>Numa pesquisa com ${T} ${c.g}: ${nA} ${c.v} ${A}, ${nB} ${c.v} ${B}, ${nC} ${c.v} ${C}; ${nAB} ${c.v} ${A} e ${B}, ${nBC} ${c.v} ${B} e ${C}, ${nAC} ${c.v} ${A} e ${C}; `;
+  const vd=venn3(c.s,r);
+  const fill=`<ol class="steps"><li>Centro (os três): <b>${r.abc}</b></li><li>Só ${A} e ${B}: ${nAB} − ${r.abc} = <b>${r.ab}</b>; só ${B} e ${C}: ${nBC} − ${r.abc} = <b>${r.bc}</b>; só ${A} e ${C}: ${nAC} − ${r.abc} = <b>${r.ac}</b></li><li>Só ${A}: ${nA} − ${r.ab} − ${r.ac} − ${r.abc} = <b>${r.a}</b></li><li>Só ${B}: ${nB} − ${r.ab} − ${r.bc} − ${r.abc} = <b>${r.b}</b></li><li>Só ${C}: ${nC} − ${r.ac} − ${r.bc} − ${r.abc} = <b>${r.c}</b></li><li>Pelo menos um: soma das 7 regiões = <b>${un}</b>; nenhum: ${T} − ${un} = <b>${r.none}</b></li></ol>`;
+  if(Math.random()<.3){const s1=nA+nB+nC-nAB-nAC-nBC;
+    return {kind:'number',q:base+`e ${r.none} não ${c.v} nenhum.</p><p><b>Quantos ${c.v} os três?</b></p>`,answer:r.abc,answerText:String(r.abc),
+      sol:`<ol class="steps"><li>Pelo menos um: ${T} − ${r.none} = ${un}</li><li>Fórmula: ${M('n(A∪B∪C) = n(A)+n(B)+n(C) − n(A∩B) − n(A∩C) − n(B∩C) + n(A∩B∩C)')}</li><li>${un} = ${nA} + ${nB} + ${nC} − ${nAB} − ${nAC} − ${nBC} + x = ${s1} + x</li><li>x = ${un} − ${s1} = <b>${r.abc}</b></li></ol>${vd}`};}
+  const Qs=[[`Quantos ${c.v} <b>somente um</b>?`,r.a+r.b+r.c,`${r.a} + ${r.b} + ${r.c}`],[`Quantos ${c.v} <b>somente dois</b>?`,r.ab+r.bc+r.ac,`${r.ab} + ${r.bc} + ${r.ac}`],
+    [`Quantos ${c.v} <b>pelo menos dois</b>?`,r.ab+r.bc+r.ac+r.abc,`${r.ab} + ${r.bc} + ${r.ac} + ${r.abc}`],[`Quantos ${c.v} <b>pelo menos um</b>?`,un,'soma das 7 regiões'],
+    [`Quantos <b>não</b> ${c.v} nenhum?`,r.none,`${T} − ${un}`],[`Quantos ${c.v} <b>somente</b> ${A}?`,r.a,`${nA} − ${r.ab} − ${r.ac} − ${r.abc}`]];
+  const [qq,ans,how]=pick(Qs);
+  return {kind:'number',q:base+`e ${r.abc} ${c.v} os três.</p><p class="ask">${qq}</p>`,answer:ans,answerText:String(ans),
+    sol:`<p>Preencha de dentro para fora:</p>${fill}${vd}<p>Resposta: ${how} = <b>${ans}</b></p>`};
+}
+
+// ===== Geradores: Lógica =====
+function genValor(){
+  const vars=Math.random()<.5?['p','q']:['p','q','r'];const e=genGood(vars.length===3?3:2,vars,2,6);
+  const env={};vars.forEach(v=>env[v]=Math.random()<.5);const val=ev(e,env);
+  const rows=subformulas(e).map(s=>`<tr><td class="m">${fmt(s)}</td><td class="${ev(s,env)?'v':'f'}">${VF(ev(s,env))}</td></tr>`).join('');
+  const vals=vars.map(v=>`${v} = ${VF(env[v])}`).join(', ');
+  return {kind:'vf',q:`<p>Sabendo que ${M(vals)}, qual o valor lógico de:</p><p class="big">${fmt(e)}</p>`,answer:val,answerText:VF(val),
+    sol:`<p>Resolva de dentro para fora (parênteses primeiro, depois ¬, depois ∧/∨, depois →, por último ↔):</p><div class="scroll"><table class="tv"><tr><th>Parte</th><th>Valor</th></tr>${rows}</table></div>`};
+}
+function genTabela(){
+  const e=genGood(2,['p','q'],2,4);const vs=['p','q'];const rows=envs(vs);
+  return {kind:'table',q:`<p>Complete a última coluna da tabela-verdade de:</p><p class="big">${fmt(e)}</p><p class="hint">Toque em cada célula para alternar entre V e F.</p>`,
+    expr:e,rows,answer:rows.map(r=>ev(e,r)),answerText:rows.map(r=>VF(ev(e,r))).join(', '),
+    sol:`<p>Monte uma coluna para cada pedaço, do menor para o maior:</p>${truthTable(e)}`};
+}
+function genClasse(){
+  const e=Math.random()<.75?parse(pick(CLASS_POOL)):genGood(2,['p','q'],2,4);const c=classify(e);
+  const expl={Tautologia:'A última coluna só tem V, então é <b>tautologia</b>.',Contradição:'A última coluna só tem F, então é <b>contradição</b>.',Contingência:'A última coluna tem V e F, então é <b>contingência</b>.'};
+  return {kind:'choice',q:`<p>Classifique a proposição:</p><p class="big">${fmt(e)}</p>`,
+    options:['Tautologia','Contradição','Contingência'].map(o=>({html:o,correct:o===c})),answerText:c,sol:`${truthTable(e)}<p>${expl[c]}</p>`};
+}
+function genEquiv(){
+  const it=pick(EQ_POOL);const q=parse(it.q);
+  const opts=shuffle([it.c,...it.w.filter(w=>!equiv(q,parse(w)))]).map(s=>({html:M(s),correct:equiv(q,parse(s))}));
+  return {kind:'choice',q:`<p>Qual expressão é <b>equivalente</b> a:</p><p class="big">${it.q}</p>`,options:opts,answerText:M(it.c),sol:`<p>${it.law}</p><p>${M(it.q+' ≡ '+it.c)}</p>`};
+}
+function genSimp(){
+  const it=pick(SIMP_POOL);const q=parse(it.q);
+  const opts=shuffle([it.a,...it.w.filter(w=>!equiv(q,parse(w)))]).map(s=>({html:M(s),correct:equiv(q,parse(s))}));
+  const steps=`<div class="deriv"><div class="dl"><span class="m">${it.q}</span><span class="law">expressão inicial</span></div>`+it.s.map(([e,l])=>`<div class="dl"><span class="m">≡ ${e}</span><span class="law">${l}</span></div>`).join('')+'</div>';
+  return {kind:'choice',q:`<p>Simplifique a expressão:</p><p class="big">${it.q}</p>`,options:opts,answerText:M(it.a),sol:`<p>Passo a passo (cada linha usa uma lei):</p>${steps}`};
+}
+function genFrases(){
+  const [P,Q]=sample(FRASES,2);const t=pick(NEG_TYPES);const tg=parse(t.target);
+  const opts=shuffle(t.opts(P,Q)).map(([txt,f])=>({html:txt,correct:equiv(tg,parse(f))}));
+  return {kind:'choice',q:`<p>${t.ask}</p><p class="big frase">“${t.base(P,Q)}”</p>`,options:opts,answerText:opts.find(o=>o.correct).html,
+    sol:`<p>Chame ${M('p')} = “${P[0]}” e ${M('q')} = “${Q[0]}”.</p><p>${t.why}</p>`};
+}
+
+const TOPICS=[
+ {id:'pert',g:'Conjuntos',name:'Pertinência e inclusão',gen:genPert},
+ {id:'oper',g:'Conjuntos',name:'Operações (∪, ∩, −, complementar)',gen:genOper},
+ {id:'partes',g:'Conjuntos',name:'Conjunto das partes',gen:genPartes},
+ {id:'cont2',g:'Conjuntos',name:'Contagem com 2 conjuntos',gen:genCont2},
+ {id:'cont3',g:'Conjuntos',name:'Contagem com 3 conjuntos',gen:genCont3},
+ {id:'valor',g:'Lógica',name:'Valor lógico',gen:genValor},
+ {id:'tabela',g:'Lógica',name:'Tabela-verdade',gen:genTabela},
+ {id:'classe',g:'Lógica',name:'Tautologia, contradição ou contingência',gen:genClasse},
+ {id:'equiv',g:'Lógica',name:'Leis de equivalência',gen:genEquiv},
+ {id:'simp',g:'Lógica',name:'Simplificação de expressões',gen:genSimp},
+ {id:'frases',g:'Lógica',name:'Negação e contrapositiva de frases',gen:genFrases}
+];
+// ===== Controle da tela =====
+const KEY='conj-logica-placar-v1';
+function loadScore(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
+function saveScore(s){try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+let score=loadScore();let session={ok:0,tot:0};let topicId='mix';let cur=null;let answered=false;
+const $=s=>document.querySelector(s);
+
+function renderTopics(){
+  const box=$('#topics');let h='';let lastG='';
+  const chip=(id,label,g)=>{const s=score[id];const sc=s?`<span class="sc">${s.ok}/${s.tot}</span>`:'';return `<button class="chip${topicId===id?' on':''}" data-id="${id}" aria-pressed="${topicId===id}">${label}${sc}</button>`;};
+  h+=`<div class="tg">${chip('mix','🎲 Misturar tudo')}</div>`;
+  TOPICS.forEach(t=>{if(t.g!==lastG){if(lastG)h+='</div>';h+=`<p class="gname">${t.g}</p><div class="tg">`;lastG=t.g;}h+=chip(t.id,t.name);});
+  h+='</div>';box.innerHTML=h;
+  box.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{topicId=b.dataset.id;renderTopics();newEx();if(matchMedia('(max-width:959px)').matches)$('#card').scrollIntoView({block:'start'});});
+  $('#session').textContent=session.tot?`Nesta sessão: ${session.ok} acerto${session.ok===1?'':'s'} em ${session.tot}`:'Nesta sessão: nenhum exercício respondido ainda';
+}
+function newEx(){
+  const t=topicId==='mix'?pick(TOPICS):TOPICS.find(x=>x.id===topicId);cur=t.gen();cur.topic=t;answered=false;render();
+}
+function render(){
+  const t=cur.topic;const card=$('#card');
+  card.innerHTML=`<p class="ttag">${t.g}: ${t.name}</p><div class="q">${cur.q}</div><div id="ans"></div><div id="fb" aria-live="polite"></div>
+  <div class="actions"><button id="reveal" class="ghost">Ver resolução</button><button id="next" class="primary">Próximo exercício</button></div>`;
+  const ans=$('#ans');
+  if(cur.kind==='vf'){ans.innerHTML=`<div class="opts two"><button class="opt" data-v="1">V (verdadeira)</button><button class="opt" data-v="0">F (falsa)</button></div>`;
+    ans.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=(b.dataset.v==='1')===cur.answer;b.classList.add(ok?'right':'wrong');finish(ok);});}
+  else if(cur.kind==='choice'){ans.innerHTML=`<div class="opts">`+cur.options.map((o,i)=>`<button class="opt" data-i="${i}">${o.html}</button>`).join('')+`</div>`;
+    ans.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=cur.options[+b.dataset.i].correct;b.classList.add(ok?'right':'wrong');finish(ok);});}
+  else if(cur.kind==='set'||cur.kind==='number'){
+    const ph=cur.kind==='set'?'Ex.: 1, 3, 5 (vazio: ∅ ou {})':'Digite o número';
+    ans.innerHTML=`<div class="inrow"><input id="inp" ${cur.kind==='number'?'inputmode="numeric"':''} autocomplete="off" placeholder="${ph}" aria-label="Sua resposta"><button id="chk" class="primary">Verificar</button></div><p id="warn" class="hint"></p>`;
+    const go=()=>{const v=$('#inp').value.trim();if(!v){$('#warn').textContent='Digite uma resposta antes de verificar.';return;}
+      let ok;if(cur.kind==='number'){const n=parseInt(v.replace(/[^\d-]/g,''),10);if(isNaN(n)){$('#warn').textContent='Digite só o número.';return;}ok=n===cur.answer;}
+      else{const nums=(v.match(/\d+/g)||[]).map(Number);const empty=/∅|vazio|\{\s*\}|ø/i.test(v)&&nums.length===0;
+        if(!nums.length&&!empty){$('#warn').textContent='Não entendi. Escreva números separados por vírgula, ou ∅ para vazio.';return;}
+        const S=[...new Set(nums)].sort((a,b)=>a-b);ok=S.length===cur.answer.length&&S.every((x,i)=>x===cur.answer[i]);}
+      $('#warn').textContent='';finish(ok);};
+    $('#chk').onclick=go;$('#inp').onkeydown=e=>{if(e.key==='Enter')go();};}
+  else if(cur.kind==='table'){
+    const cells=cur.rows.map(()=>null);
+    let h=`<div class="scroll"><table class="tv"><tr><th>p</th><th>q</th><th class="last">${fmt(cur.expr)}</th></tr>`;
+    cur.rows.forEach((r,i)=>{h+=`<tr><td class="${r.p?'v':'f'}">${VF(r.p)}</td><td class="${r.q?'v':'f'}">${VF(r.q)}</td><td><button class="cell" data-i="${i}" aria-label="Linha ${i+1}: toque para escolher">?</button></td></tr>`;});
+    ans.innerHTML=h+`</table></div><div class="inrow"><button id="chk" class="primary">Verificar</button></div><p id="warn" class="hint"></p>`;
+    ans.querySelectorAll('.cell').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;cells[i]=cells[i]===null?true:cells[i]?false:true;b.textContent=VF(cells[i]);b.className='cell '+(cells[i]?'v':'f');});
+    $('#chk').onclick=()=>{if(cells.some(c=>c===null)){$('#warn').textContent='Preencha todas as linhas.';return;}$('#warn').textContent='';
+      ans.querySelectorAll('.cell').forEach((b,i)=>b.classList.add(cells[i]===cur.answer[i]?'right':'wrong'));finish(cells.every((c,i)=>c===cur.answer[i]));};}
+  $('#reveal').onclick=()=>{if(answered)return;answered=true;lock();$('#fb').innerHTML=`<div class="fb neutral"><p><b>Resposta:</b> ${cur.answerText}</p>${cur.sol}</div>`;$('#reveal').disabled=true;};
+  $('#next').onclick=()=>{newEx();$('#card').scrollIntoView({block:'start'});};
+}
+function lock(){$('#ans').querySelectorAll('button,input').forEach(el=>{if(el.id!=='next')el.disabled=true;});}
+function finish(ok){
+  if(answered)return;answered=true;lock();$('#reveal').disabled=true;
+  const id=cur.topic.id;score[id]=score[id]||{ok:0,tot:0};score[id].tot++;if(ok)score[id].ok++;saveScore(score);
+  session.tot++;if(ok)session.ok++;
+  $('#fb').innerHTML=ok?`<div class="fb good"><p class="verdict">✔ Correto!</p>${cur.sol}</div>`:`<div class="fb bad"><p class="verdict">✘ Não foi dessa vez.</p><p><b>Resposta certa:</b> ${cur.answerText}</p>${cur.sol}</div>`;
+  renderTopics();$('#next').focus({preventScroll:true});
+}
+function show(view){
+  $('#home').hidden=view!=='home';$('#trainer').hidden=view!=='trainer';
+  if(view==='trainer'){if(!cur)newEx();renderTopics();}
+  window.scrollTo(0,0);
+}
+$('#go-ex').onclick=()=>{history.replaceState(null,'','#exercicios');show('trainer');};
+$('#back').onclick=()=>{history.replaceState(null,'',location.pathname+location.search);show('home');};
+$('#reset').onclick=()=>{if(confirm('Zerar o placar de todos os temas?')){score={};saveScore(score);session={ok:0,tot:0};renderTopics();}};
+show(location.hash==='#exercicios'?'trainer':'home');
+</script>
+  </body>
+</html>

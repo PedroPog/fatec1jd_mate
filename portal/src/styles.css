@@ -1,0 +1,114 @@
+/* Caderno Central — mesmo visual de caderno dos conteúdos de Conjuntos e Lógica */
+:root {
+  --paper: #FAFBFE; --grid: #E4EBF6; --card: #FFFFFF; --ink: #232834; --muted: #5A6376;
+  --pen: #1E3F9A; --pen-soft: #E3EAFB; --red: #C3363F; --red-soft: #FBE9EA;
+  --hl: #FFF0A3; --hl-ink: #232834; --line: #CAD5E7; --code: #F1F4FA;
+  --ok: #1F7A4A; --ok-bg: #E2F4EA;
+  --topo: 60px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #141925; --grid: #1D2433; --card: #1A2030; --ink: #E6E9F0; --muted: #9CA5B8;
+    --pen: #93B2FF; --pen-soft: #22305A; --red: #FF7D86; --red-soft: #3A1C20;
+    --hl: #4A4114; --hl-ink: #FFF4C4; --line: #2F394C; --code: #11161F;
+    --ok: #7FD8A6; --ok-bg: #16301F;
+    color-scheme: dark;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; color: var(--ink); background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  font: 17px/1.6 "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--pen); outline-offset: 2px; border-radius: 3px; }
+a { color: var(--pen); }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+h1, h2, h3, .kalam { font-family: Kalam, "Comic Sans MS", cursive; font-weight: 700; line-height: 1.15; text-wrap: balance; }
+h1 { color: var(--pen); font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 8px; }
+h2 { color: var(--pen); font-size: 1.6rem; margin: 0 0 8px; }
+h3 { font-size: 1.25rem; margin: 0 0 6px; }
+p { margin: 0 0 10px; }
+code, .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: .86em; }
+:not(pre) > code { background: var(--code); padding: 1px 5px; border-radius: 4px; }
+
+.muted { color: var(--muted); }
+.small { font-size: .88rem; }
+.pagina { max-width: 1100px; margin: 0 auto; padding: 28px 16px 64px; }
+.pagina.estreita { max-width: 780px; }
+.lead { max-width: 60ch; font-size: 1.05rem; }
+.linha { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.entre { justify-content: space-between; }
+.pilha { display: grid; gap: 12px; }
+.margem { border-left: 2px solid var(--red); padding-left: clamp(12px, 3vw, 28px); }
+
+/* botões */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--pen); background: var(--pen); color: var(--card);
+  border-radius: 6px; padding: 6px 14px; font-weight: 700; text-decoration: none; line-height: 1.4;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn.sec { background: transparent; color: var(--pen); }
+.btn.perigo { background: transparent; color: var(--red); border-color: var(--red); }
+.btn.link { background: none; border: 0; color: var(--pen); padding: 0; font-weight: 400; text-decoration: underline; }
+.btn.peq { padding: 2px 10px; font-size: .82rem; }
+.btn:disabled { opacity: .5; cursor: not-allowed; filter: none; }
+
+/* campos */
+.campo { display: grid; gap: 4px; font-size: .88rem; color: var(--muted); }
+.campo input, .campo select, .campo textarea, textarea.caixa, input.caixa {
+  border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; background: var(--card);
+  color: var(--ink); width: 100%; font-size: .95rem;
+}
+textarea { resize: vertical; min-height: 80px; }
+.campos { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+/* cartões e etiquetas */
+.cartao { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.tag { display: inline-block; font-size: .75rem; padding: 1px 9px; border-radius: 999px; background: var(--pen-soft); color: var(--pen); }
+.tag.materia { background: transparent; border: 1px solid var(--red); color: var(--red); }
+.chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 3px 12px; font-size: .88rem; }
+.chip[aria-pressed="true"] { background: var(--pen); border-color: var(--pen); color: var(--card); }
+.selo { font-size: .72rem; padding: 0 7px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+.selo.ok { color: var(--ok); background: var(--ok-bg); border-color: transparent; }
+.selo.rascunho { color: var(--muted); }
+
+.aviso { border-left: 4px solid var(--red); background: var(--card); padding: 10px 14px; font-size: .92rem; }
+.aviso.info { border-left-color: var(--pen); }
+.erro { color: var(--red); font-size: .9rem; }
+.sucesso { background: var(--ok-bg); color: var(--ok); border-radius: 6px; padding: 6px 10px; font-size: .9rem; }
+.vazio { color: var(--muted); font-style: italic; }
+.carregando { color: var(--muted); }
+
+.avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: var(--pen); color: var(--card); display: inline-grid; place-items: center; font-weight: 700; font-size: .8rem; flex: none; }
+.avatar.peq { width: 22px; height: 22px; font-size: .7rem; }
+
+/* mensagens de fórum/dúvidas */
+.msg { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; }
+.msg .quem { font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.msg .quem b { color: var(--ink); font-weight: 700; }
+.msg .texto { white-space: pre-wrap; overflow-wrap: anywhere; grid-column: 2; }
+.msg .acoes { grid-column: 2; display: flex; gap: 12px; flex-wrap: wrap; font-size: .82rem; }
+
+/* tabelas do admin */
+.tabela { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+.tabela table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .92rem; }
+.tabela th, .tabela td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.tabela th { font-size: .75rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); background: var(--code); }
+.tabela tr:last-child td { border-bottom: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+.barra { height: 8px; background: var(--code); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.barra > span { display: block; height: 100%; background: var(--pen); transition: width .2s; }
+.barra.cheia > span { background: var(--red); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
