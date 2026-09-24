@@ -102,10 +102,33 @@ export function analisar(corpo: Corpo): Analise {
     infos.push('O conteúdo está perto do limite de 1 MB.');
   }
 
+  // <link rel="stylesheet" href="x.css"> e <script src="x.js"> locais são removidos na montagem
+  // (servem só para abrir o arquivo fora do portal); o conteúdo deles vai nos campos CSS e JS.
+  const locaisCss: string[] = [];
+  const locaisJs: string[] = [];
+  doc.querySelectorAll('link[rel~="stylesheet"][href]').forEach((el) => {
+    const v = el.getAttribute('href')!.trim();
+    if (ehLocal(v)) locaisCss.push(v);
+  });
+  doc.querySelectorAll('script[src]').forEach((el) => {
+    const v = el.getAttribute('src')!.trim();
+    if (ehLocal(v)) locaisJs.push(v);
+  });
+  if (locaisCss.length && !corpo.css.trim()) {
+    avisos.push(`O HTML usa ${locaisCss.join(', ')}, que não carrega no portal. Envie esse arquivo no campo CSS.`);
+  }
+  if (locaisJs.length && !corpo.js.trim()) {
+    avisos.push(`O HTML usa ${locaisJs.join(', ')}, que não carrega no portal. Envie esse arquivo no campo JS.`);
+  }
+  if ((locaisCss.length && corpo.css.trim()) || (locaisJs.length && corpo.js.trim())) {
+    infos.push(`As ligações locais (${[...locaisCss, ...locaisJs].join(', ')}) são ignoradas no portal; vale o que foi enviado nos campos CSS e JS.`);
+  }
+
   const relativos = new Set<string>();
   doc.querySelectorAll('[src],link[href]').forEach((el) => {
+    if (el.matches('link[rel~="stylesheet"], script[src]')) return;
     const v = (el.getAttribute('src') ?? el.getAttribute('href') ?? '').trim();
-    if (v && !/^(https?:|data:|blob:|\/\/|#|mailto:|tel:|javascript:)/i.test(v)) relativos.add(v);
+    if (v && ehLocal(v)) relativos.add(v);
   });
   if (relativos.size) {
     avisos.push(
@@ -144,6 +167,23 @@ export function analisar(corpo: Corpo): Analise {
 // Montagem do documento do iframe
 // ---------------------------------------------------------------------------
 
+/** Caminho que só existe na pasta do autor (não é URL completa, data:, âncora etc.). */
+export function ehLocal(v: string): boolean {
+  return !!v && !/^(https?:|data:|blob:|\/\/|#|mailto:|tel:|javascript:)/i.test(v);
+}
+
+/** Tira <link rel="stylesheet"> e <script src> que apontam para arquivos locais. */
+export function removerLigacoesLocais(html: string): string {
+  const attr = (tag: string, nome: string) => tag.match(new RegExp(`\\b${nome}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i'));
+  const valor = (m: RegExpMatchArray | null) => (m ? (m[1] ?? m[2] ?? m[3] ?? '').trim() : '');
+  return html
+    .replace(/<link\b[^>]*>/gi, (tag) => {
+      const rel = valor(attr(tag, 'rel')).toLowerCase().split(/\s+/);
+      return rel.includes('stylesheet') && ehLocal(valor(attr(tag, 'href'))) ? '' : tag;
+    })
+    .replace(/<script\b[^>]*\bsrc\s*=[^>]*>\s*<\/script\s*>/gi, (tag) => (ehLocal(valor(attr(tag, 'src'))) ? '' : tag));
+}
+
 const RE_HEAD = /<head(\s[^>]*)?>/i;
 const RE_HTML = /<html(\s[^>]*)?>/i;
 
@@ -160,7 +200,7 @@ export function montarDocumento(corpo: Corpo, cfg: ConfigPonte): string {
   const css = corpo.css.trim() ? `<style>${corpo.css.replace(/<\/style/gi, '<\\/style')}</style>` : '';
   const js = corpo.js.trim() ? `<script>${corpo.js.replace(/<\/script/gi, '<\\/script')}</script>` : '';
 
-  let html = corpo.html;
+  let html = removerLigacoesLocais(corpo.html);
   if (RE_HEAD.test(html)) {
     html = html.replace(RE_HEAD, (m) => m + ponte);
   } else if (RE_HTML.test(html)) {

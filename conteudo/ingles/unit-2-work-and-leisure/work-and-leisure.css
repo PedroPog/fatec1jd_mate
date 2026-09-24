@@ -1,0 +1,173 @@
+/* Work and Leisure (Market Leader, Unit 2) — mesmo visual de caderno dos resumos de Matemática */
+:root{
+  --paper:#FAFBFE; --grid:#E4EBF6; --card:#FFFFFF; --ink:#232834; --muted:#5A6376;
+  --pen:#1E3F9A; --pen-soft:#E3EAFB; --red:#C3363F; --red-soft:#FBE9EA;
+  --hl:#FFF0A3; --hl-ink:#232834; --line:#CAD5E7; --code:#F1F4FA;
+  --ok:#1F7A4A; --ok-bg:#E2F4EA;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+    --pen:#93B2FF; --pen-soft:#22305A; --red:#FF7D86; --red-soft:#3A1C20;
+    --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C; --code:#11161F;
+    --ok:#7FD8A6; --ok-bg:#16301F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141925; --grid:#1D2433; --card:#1A2030; --ink:#E6E9F0; --muted:#9CA5B8;
+  --pen:#93B2FF; --pen-soft:#22305A; --red:#FF7D86; --red-soft:#3A1C20;
+  --hl:#4A4114; --hl-ink:#FFF4C4; --line:#2F394C; --code:#11161F;
+  --ok:#7FD8A6; --ok-bg:#16301F;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font:17px/1.65 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+img,svg{max-width:100%}
+a{color:var(--pen)}
+a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--pen);outline-offset:2px;border-radius:3px}
+button,input{font:inherit;color:inherit}
+
+/* topo */
+.partes{max-width:1120px;margin:0 auto;padding:14px 20px 0;display:flex;gap:8px;flex-wrap:wrap;font-size:.92rem}
+.partes a{color:var(--pen);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 12px}
+.partes a:hover{border-color:var(--pen)}
+
+.hero{max-width:1120px;margin:0 auto;padding:36px 20px 8px;display:grid;gap:16px 40px;align-items:center}
+@media (min-width:820px){.hero{grid-template-columns:1.1fr 1fr}}
+.hero .eyebrow{font-family:Kalam,cursive;color:var(--red);font-size:1.1rem;margin:0}
+.hero h1{font-family:Kalam,"Comic Sans MS",cursive;font-weight:700;color:var(--pen);font-size:clamp(2.3rem,6vw,3.5rem);line-height:1.05;margin:0 0 12px}
+.hero p{margin:0 0 10px;max-width:48ch}
+.hero .legend{color:var(--muted);font-size:.95rem}
+.hero figure{margin:0}
+.hero figcaption{text-align:center;color:var(--muted);font-size:.95rem;margin-top:8px}
+
+/* rotina (figura do topo) */
+.rotina{list-style:none;margin:0;padding:14px 18px;background:var(--card);border:1px solid var(--line);border-radius:10px;display:grid;gap:6px}
+.rotina li{display:grid;grid-template-columns:4.2em 1fr;gap:12px;align-items:baseline;padding:3px 0;border-bottom:1px dashed var(--line)}
+.rotina li:last-child{border-bottom:0}
+.rotina time{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.rotina .s{color:var(--red);font-weight:700}
+
+/* layout */
+.wrap{max-width:1120px;margin:0 auto;padding:16px 20px 64px;display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
+@media (min-width:1000px){.wrap{grid-template-columns:230px minmax(0,1fr);gap:40px}}
+nav.toc{font-size:.93rem}
+@media (min-width:1000px){nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto}}
+nav.toc h2{font-family:Kalam,cursive;font-size:1.3rem;margin:0 0 4px;color:var(--pen)}
+nav.toc ol{list-style:none;margin:0 0 14px;padding:0}
+nav.toc li a{display:block;padding:3px 0;color:var(--ink);text-decoration:none}
+nav.toc li a:hover{color:var(--pen);text-decoration:underline}
+nav.toc .part{font-family:Kalam,cursive;color:var(--red);font-size:1.05rem;margin-top:6px}
+
+main{border-left:2px solid var(--red);padding-left:18px;min-width:0}
+@media (min-width:700px){main{padding-left:32px}}
+main section{margin-bottom:44px}
+main p, main ul, main ol{max-width:70ch}
+.part-title{font-family:Kalam,cursive;font-weight:700;color:var(--pen);font-size:clamp(2rem,4.5vw,2.6rem);margin:8px 0 4px;line-height:1.1}
+.part-sub{color:var(--muted);margin:0 0 28px}
+h3{font-family:Kalam,cursive;font-weight:700;font-size:1.55rem;line-height:1.2;margin:0 0 8px;color:var(--ink)}
+h3 .n{color:var(--red);margin-right:8px}
+h4{font-size:1.02rem;margin:20px 0 6px}
+.fonte{color:var(--muted);font-size:.88rem;margin:-4px 0 12px}
+
+/* frases em inglês */
+.en{font-family:"STIX Two Text",Cambria,Georgia,serif;font-size:1.08em}
+.en b,.copy .en b{color:var(--pen)}
+.s-end{color:var(--red);font-weight:700}
+.x{color:var(--red);text-decoration:line-through;text-decoration-thickness:2px}
+
+/* caixas */
+.copy{position:relative;background:var(--hl);color:var(--hl-ink);padding:24px 18px 14px;margin:16px 0;border-radius:3px 12px 4px 14px;max-width:70ch}
+.copy::before{content:"✎ copie no caderno";position:absolute;top:4px;right:12px;font-family:Kalam,cursive;font-size:.9rem;color:var(--red)}
+.copy p{margin:4px 0}
+.copy ul{margin:4px 0;padding-left:20px}
+.copy .en b{color:inherit}
+
+.tip{border-left:4px solid var(--red);background:var(--card);padding:10px 16px;margin:16px 0;max-width:70ch}
+.tip strong.t{font-family:Kalam,cursive;color:var(--red);font-size:1.1rem;font-weight:700;display:block}
+.tip p{margin:4px 0}
+.tip.azul{border-left-color:var(--pen)}
+.tip.azul strong.t{color:var(--pen)}
+
+.ex{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:16px 0;max-width:70ch}
+.ex strong.t{font-family:Kalam,cursive;color:var(--pen);font-size:1.1rem;font-weight:700;display:block}
+.ex p{margin:4px 0}
+.ex ol,.ex ul{margin:6px 0;padding-left:22px}
+
+/* tabelas */
+.scroll{overflow-x:auto;margin:14px 0;max-width:100%}
+table{border-collapse:collapse;background:var(--card)}
+th,td{border:1px solid var(--line);padding:6px 12px;text-align:left;vertical-align:top}
+th{font-weight:700;font-size:.92rem;background:var(--code)}
+.copy table{background:transparent}
+.copy th,.copy td{border-color:rgba(35,40,52,.25)}
+.copy th{background:rgba(255,255,255,.45)}
+td.num,th.num{text-align:center;font-variant-numeric:tabular-nums}
+
+/* escala de frequência */
+.escala{display:grid;gap:4px;margin:12px 0;max-width:520px}
+.escala div{display:grid;grid-template-columns:7.5em 1fr 3.2em;align-items:center;gap:10px;font-size:.95rem}
+.escala .barra{height:12px;background:var(--code);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.escala .barra span{display:block;height:100%;background:var(--pen)}
+.escala .pct{color:var(--muted);font-size:.85rem;text-align:right;font-variant-numeric:tabular-nums}
+
+/* fórmula de ordem das palavras */
+.ordem{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.ordem span{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:3px 10px;font-size:.92rem}
+.ordem span small{display:block;color:var(--muted);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase}
+.ordem .adv{border-color:var(--red);color:var(--red)}
+
+/* gabarito */
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:10px 0;max-width:70ch}
+summary{cursor:pointer;font-weight:700}
+details .ans{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+details .ans p{margin:4px 0}
+details .ans ol{margin:4px 0;padding-left:26px}
+details .ans li{margin:2px 0}
+.porque{color:var(--muted);font-size:.9rem}
+
+.exercicio{margin:22px 0 8px;max-width:70ch}
+.exercicio h4{margin:0 0 4px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.exercicio h4 .letra{display:inline-grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;background:var(--pen);color:var(--card);font-size:.9rem;flex:none}
+.exercicio h4 .onde{color:var(--muted);font-weight:400;font-size:.88rem}
+.exercicio .como{margin:4px 0}
+
+/* treino interativo */
+.treino{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:16px 0;max-width:72ch}
+.treino-topo{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.treino-topo h4{margin:0;font-family:Kalam,cursive;font-size:1.25rem;color:var(--pen)}
+.placar{font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.item{padding:10px 0;border-bottom:1px dashed var(--line);display:grid;gap:6px}
+.item:last-of-type{border-bottom:0}
+.item .frase{font-family:"STIX Two Text",Cambria,Georgia,serif;font-size:1.1rem}
+.item .lacuna{display:inline-block;min-width:3.2em;border-bottom:2px solid var(--muted);text-align:center;color:var(--pen);font-weight:700}
+.opcoes{display:flex;gap:6px;flex-wrap:wrap}
+.opcoes button{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:3px 14px;cursor:pointer;min-width:3em}
+.opcoes button:hover:not(:disabled){border-color:var(--pen)}
+.opcoes button.certo{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:700}
+.opcoes button.errado{background:var(--red-soft);border-color:var(--red);color:var(--red)}
+.opcoes button:disabled{cursor:default}
+.opcoes.lista{flex-direction:column;align-items:stretch}
+.opcoes.lista button{text-align:left;font-family:"STIX Two Text",Cambria,Georgia,serif;font-size:1.05rem}
+.escrever{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.escrever input{border:1px solid var(--line);border-radius:6px;padding:4px 10px;background:var(--paper);width:10em}
+.escrever input.certo{border-color:var(--ok);background:var(--ok-bg)}
+.escrever input.errado{border-color:var(--red);background:var(--red-soft)}
+.escrever button,.refazer{border:1px solid var(--pen);background:var(--pen);color:var(--card);border-radius:6px;padding:3px 14px;cursor:pointer;font-weight:700}
+.refazer{background:transparent;color:var(--pen);margin-top:10px}
+.fb{font-size:.9rem;margin:0}
+.fb.certo{color:var(--ok)}
+.fb.errado{color:var(--red)}
+
+footer{max-width:1120px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:.9rem}

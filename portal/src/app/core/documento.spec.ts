@@ -1,4 +1,4 @@
-import { analisar, montarDocumento } from './documento';
+import { analisar, montarDocumento, removerLigacoesLocais } from './documento';
 
 describe('documento', () => {
   const completo = `<!doctype html><html><head><title>Conjuntos</title>
@@ -44,5 +44,25 @@ describe('documento', () => {
     const doc = montarDocumento({ html: '<p>oi</p>', css: '', js: '' }, { storage: {}, secaoInicial: null });
     expect(doc.startsWith('<!doctype html>')).toBe(true);
     expect(doc).toContain('<body><p>oi</p></body>');
+  });
+
+  it('remove ligações locais para CSS/JS, mas mantém as externas', () => {
+    const html = '<head><link rel="stylesheet" href="estilo.css"><link href="https://fonts.googleapis.com/x" rel="stylesheet">' +
+      '<link rel="preconnect" href="https://fonts.gstatic.com"><script src="app.js" defer></script>' +
+      '<script src="https://cdn.example.com/lib.js"></script></head>';
+    const r = removerLigacoesLocais(html);
+    expect(r).not.toContain('estilo.css');
+    expect(r).not.toContain('app.js');
+    expect(r).toContain('fonts.googleapis.com');
+    expect(r).toContain('lib.js');
+    expect(r).toContain('preconnect');
+  });
+
+  it('pede os campos CSS/JS quando o HTML aponta para arquivos locais', () => {
+    const html = '<head><link rel="stylesheet" href="a.css"><script src="a.js"></script></head><body></body>';
+    expect(analisar({ html, css: '', js: '' }).avisos.length).toBe(2);
+    const ok = analisar({ html, css: 'body{}', js: 'var x;' });
+    expect(ok.avisos.length).toBe(0);
+    expect(ok.infos.some((t) => t.includes('a.css'))).toBe(true);
   });
 });
