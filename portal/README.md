@@ -100,6 +100,18 @@ O conteúdo roda num `<iframe sandbox="allow-scripts …">` **sem** `allow-same-
 - o JS do conteúdo roda, mas não enxerga o login nem o Firestore;
 - `src/app/core/documento.ts` monta o documento e injeta a **ponte** (`PONTE_JS`) antes de tudo. A ponte cria os marcadores, substitui o `localStorage`, ignora `history.pushState` (que falha nesse tipo de iframe) e conversa com o Angular por `postMessage`.
 
+## Acessibilidade (Allyada)
+
+O portal traz o painel de acessibilidade [Allyada](https://github.com/sarinha156/allyada) (licença MIT). O botão fica no canto inferior esquerdo e também abre com **Alt + A**.
+
+- A biblioteca fica em `public/vendor/allyada/`, numa versão fixa (commit anotado em `VERSAO.md`), junto com a licença.
+- Ela é carregada no `src/index.html` com `data-auto-init="false"` e iniciada pelo `AcessibilidadeService` (`src/app/core/acessibilidade.service.ts`) com as cores do portal.
+- Dentro dos conteúdos (iframe do leitor), a ponte aplica as mesmas escolhas: tamanho do texto, espaçamento, fonte Lexend, alinhamento, contraste escuro/claro, destaque de links, foco reforçado, cursor maior e menos movimento. Tons de cinza, inversão e filtros de daltonismo já passam por cima do iframe, então não são repetidos.
+- Alt + A funciona mesmo com o foco dentro do conteúdo.
+- Ainda **não** alcançam o texto dos conteúdos: "Ouvir página" (lê só o portal), régua/máscara de leitura e teclado virtual.
+
+Para atualizar a biblioteca: troque `public/vendor/allyada/allyada.js` pela nova versão do `dist/`, teste o painel no `/forum` e num conteúdo (`/c/...`) e atualize o `VERSAO.md`.
+
 ## Dados no Firebase
 
 | Onde | O quê | Quem escreve |

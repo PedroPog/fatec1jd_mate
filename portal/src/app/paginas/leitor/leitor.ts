@@ -4,6 +4,7 @@ import {
 import { Location } from '@angular/common';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AcessibilidadeService } from '../../core/acessibilidade.service';
 import { AnotacaoService } from '../../core/anotacao.service';
 import { AuthService } from '../../core/auth.service';
 import { ConteudoService } from '../../core/conteudo.service';
@@ -37,6 +38,7 @@ export class Leitor {
   private location = inject(Location);
   private router = inject(Router);
   private rota = inject(ActivatedRoute);
+  private acessibilidade = inject(AcessibilidadeService);
 
   private quadro = viewChild<ElementRef<HTMLIFrameElement>>('quadro');
 
@@ -108,6 +110,13 @@ export class Leitor {
       this.enviar({ tipo: 'contagens', mapa });
     });
     effect(() => this.enviar({ tipo: 'ativa', secao: this.painel() === 'duvidas' ? this.secaoAtiva() : null }));
+
+    // Preferências do Allyada (fonte, espaçamento, contraste...) também dentro do conteúdo.
+    effect(() => {
+      const estado = this.acessibilidade.estado();
+      this.secoesVivas(); // reenvia quando o conteúdo recarrega
+      if (estado) this.enviar({ tipo: 'acessibilidade', ...estado });
+    });
 
     // Respostas da dúvida aberta.
     effect(() => {
@@ -184,6 +193,13 @@ export class Leitor {
       case 'secoes':
         this.secoesVivas.set(((d['lista'] as Secao[]) ?? []).slice(0, 300));
         this.enviar({ tipo: 'contagens', mapa: this.contagens() });
+        {
+          const estado = this.acessibilidade.estado();
+          if (estado) this.enviar({ tipo: 'acessibilidade', ...estado });
+        }
+        break;
+      case 'atalho-acessibilidade':
+        this.acessibilidade.alternarPainel();
         break;
       case 'abrir':
         this.abrirSecao(String(d['secao']));

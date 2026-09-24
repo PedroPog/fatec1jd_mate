@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, afterNextRender, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AcessibilidadeService } from './core/acessibilidade.service';
 import { AuthService } from './core/auth.service';
 import { firebaseConfigurado } from './core/firebase';
 import { mensagemErro } from './core/util';
@@ -69,6 +70,11 @@ export class App {
   private router = inject(Router);
   protected configurado = firebaseConfigurado;
   protected erro = signal('');
+
+  constructor() {
+    const acessibilidade = inject(AcessibilidadeService);
+    afterNextRender(() => acessibilidade.iniciar());
+  }
 
   async entrar() {
     this.erro.set('');

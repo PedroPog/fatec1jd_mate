@@ -219,8 +219,8 @@ export function montarDocumento(corpo: Corpo, cfg: ConfigPonte): string {
 
 // ---------------------------------------------------------------------------
 // ponte.js — roda dentro do iframe ANTES do JS do conteúdo.
-// Mensagens para o portal: {cc:1, tipo:'secoes'|'abrir'|'storage'|'navegar'}
-// Mensagens do portal:     {cc:1, tipo:'contagens'|'rolar'|'ativa'}
+// Mensagens para o portal: {cc:1, tipo:'secoes'|'abrir'|'storage'|'navegar'|'atalho-acessibilidade'}
+// Mensagens do portal:     {cc:1, tipo:'contagens'|'rolar'|'ativa'|'acessibilidade'}
 // ---------------------------------------------------------------------------
 
 export const PONTE_JS = String.raw`(function(){
@@ -329,6 +329,67 @@ export const PONTE_JS = String.raw`(function(){
       rolar(d.secao);
     } else if (d.tipo === 'ativa') {
       secoes.forEach(function(s){ s.el.classList.toggle('cc-ativa', s.id === d.secao); });
+    } else if (d.tipo === 'acessibilidade') {
+      aplicarAcessibilidade(d);
+    }
+  });
+
+  /* Preferências do painel Allyada do portal (fonte, espaçamento, contraste, foco...) */
+  var classesAlly = [];
+  function aplicarAcessibilidade(d){
+    var html = document.documentElement;
+    classesAlly.forEach(function(c){ html.classList.remove(c); });
+    classesAlly = (d.classes || []).filter(function(c){ return /^ally-[a-z0-9-]+$/.test(c); });
+    classesAlly.forEach(function(c){ html.classList.add(c); });
+    var st = document.getElementById('cc-ally-css');
+    if (!st) { st = document.createElement('style'); st.id = 'cc-ally-css'; document.head.appendChild(st); }
+    var css = String(d.css || '') + '\n' + String(d.dinamico || '');
+    if (st.textContent !== css) st.textContent = css;
+    html.style.setProperty('--allyada-highlight-color', String(d.cor || '#f59e0b'));
+    escalarFonte(Number(d.fator) || 1);
+  }
+  var SELETOR_TEXTO = 'p, h1, h2, h3, h4, h5, h6, a, span, li, button, input, textarea, select, label, blockquote, figcaption, td, th, kbd, dt, dd, summary, code, pre, div';
+  var fatorAtual = 1;
+  function temTextoProprio(el){
+    for (var n = el.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.nodeValue.trim()) return true;
+    return false;
+  }
+  function escalarFonte(f){
+    if (f === 1 && fatorAtual === 1) return;
+    fatorAtual = f;
+    var marcados = document.body.querySelectorAll('[data-cc-fonte]');
+    /* 1) volta todos ao tamanho original, para medir os novos sem somar o aumento do pai */
+    Array.prototype.forEach.call(marcados, function(el){ el.style.fontSize = el.dataset.ccFonteInline || ''; });
+    if (f === 1) {
+      Array.prototype.forEach.call(marcados, function(el){ delete el.dataset.ccFonte; delete el.dataset.ccFonteInline; });
+      return;
+    }
+    /* 2) mede os elementos que ainda não foram medidos */
+    var todos = Array.prototype.filter.call(document.body.querySelectorAll(SELETOR_TEXTO), function(el){
+      if (el.classList.contains('cc-marca')) return false;
+      return el.tagName !== 'DIV' || temTextoProprio(el);
+    });
+    todos.forEach(function(el){
+      if (!el.dataset.ccFonte) { el.dataset.ccFonteInline = el.style.fontSize || ''; el.dataset.ccFonte = getComputedStyle(el).fontSize; }
+    });
+    /* 3) aplica o fator sobre o tamanho original de cada um */
+    todos.forEach(function(el){
+      var px = parseFloat(el.dataset.ccFonte);
+      if (px > 0) el.style.fontSize = (px * f).toFixed(1) + 'px';
+    });
+  }
+  /* Conteúdo criado depois (ex.: treinos em JS) também recebe o tamanho escolhido */
+  var fonteAgendada = null;
+  new MutationObserver(function(){
+    if (fatorAtual === 1 || fonteAgendada) return;
+    fonteAgendada = setTimeout(function(){ fonteAgendada = null; escalarFonte(fatorAtual); }, 150);
+  }).observe(document.documentElement, { childList: true, subtree: true });
+
+  /* Alt + A abre o painel de acessibilidade do portal mesmo com o foco no conteúdo */
+  document.addEventListener('keydown', function(e){
+    if (e.altKey && !e.ctrlKey && !e.metaKey && String(e.key).toLowerCase() === 'a') {
+      e.preventDefault();
+      enviar({ tipo: 'atalho-acessibilidade' });
     }
   });
 
